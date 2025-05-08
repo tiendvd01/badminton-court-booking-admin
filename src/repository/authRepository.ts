@@ -1,8 +1,8 @@
-import axios from "axios";
+import httpService from "@/lib/httpService";
 
 class AuthRepository {
   async login(email: string, password: string) {
-    return axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users/login`, {
+    return httpService.post(`${process.env.NEXT_PUBLIC_API_URL}/users/login`, {
       email,
       password,
     });
@@ -21,7 +21,7 @@ class AuthRepository {
     phone?: string;
     avatar_url?: string;
   }) {
-    return axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users/register`, {
+    return httpService.post(`${process.env.NEXT_PUBLIC_API_URL}/users/register`, {
       name,
       email,
       password,

@@ -28,9 +28,9 @@ export default function RootLayout({
 }>) {
   const { initUserFromLocalStorage } = useAuthStore();
 
-  useEffect(() => {
-    initUserFromLocalStorage();
-  }, []);
+  // useEffect(() => {
+  //   initUserFromLocalStorage();
+  // }, []);
   
   return (
     <html lang="en">

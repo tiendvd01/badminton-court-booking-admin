@@ -14,7 +14,7 @@ type FormValues = {
 };
 
 export default function SignInForm() {
-  const { mutate: login, isPending, isError } = useLoginMutation();
+  const { mutate: login, isPending, isError, error } = useLoginMutation();
   const [showPassword, setShowPassword] = useState(false);
   
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
@@ -41,7 +41,6 @@ export default function SignInForm() {
   });
 
   const onSubmit = (data: FormValues) => {
-    console.log("data", data)
     login(data);
   };
 
@@ -154,7 +153,7 @@ export default function SignInForm() {
                   </Button>
                   {isError && (
                     <p className="mt-2 text-sm text-error-500">
-                      Invalid email or password. Please try again.
+                      {error.response?.data.message}
                     </p>
                   )}
                 </div>

@@ -1,12 +1,19 @@
 'use client'
 import { useMutation } from "@tanstack/react-query";
 import authRepository from "@/repository/authRepository";
-import { useAuthStore } from "@/stores/authStore";
+import { IUser, useAuthStore } from "@/stores/authStore";
+import { IErrorResponse, IResponse } from "@/types/common";
+import { AxiosError } from "axios";
+
+interface LoginResponse extends IResponse {
+  user: IUser;
+  token: string;
+}
 
 function useLoginMutation() {
   const { login } = useAuthStore();
 
-  return useMutation({
+  return useMutation<LoginResponse, AxiosError<IErrorResponse>, { email: string; password: string }, unknown>({
     mutationFn: async ({ email, password }: { email: string; password: string }) => {
       const response = await authRepository.login(email, password);
       return response.data;
