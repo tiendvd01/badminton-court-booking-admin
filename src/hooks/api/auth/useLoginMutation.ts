@@ -6,8 +6,10 @@ import { IErrorResponse, IResponse } from "@/types/common";
 import { AxiosError } from "axios";
 
 interface LoginResponse extends IResponse {
-  user: IUser;
-  token: string;
+  data: {
+    user: IUser;
+    token: string;
+  };
 }
 
 function useLoginMutation() {
@@ -19,7 +21,7 @@ function useLoginMutation() {
       return response.data;
     },
     onSuccess: (data) => {
-      login(data.user, data.token);
+      login(data.data.user, data.data.token);
     }
   });
 }

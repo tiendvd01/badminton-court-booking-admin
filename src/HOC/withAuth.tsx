@@ -1,5 +1,5 @@
 // lib/withAuth.tsx
-import { IUser } from '@/stores/authStore';
+import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'next/navigation';
 import { PropsWithChildren, useEffect } from 'react';
 
@@ -15,18 +15,18 @@ export function withAuth<P extends PropsWithChildren>(
 
   const ComponentWithAuth: React.FC<P> = (props: P) => {
     const router = useRouter();
-    const user: IUser = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || 'null') : null;
+    const { user } = useAuthStore();
 
     useEffect(() => {
       if (!user) {
         router.replace('/signin'); // Redirect if not authenticated
-      } else if (requiredRoles && requiredRoles.includes(user.role)) {
+      } else if (requiredRoles && !requiredRoles.includes(user.role)) {
         router.replace('/unauthorized'); // Redirect if role doesn't match
       }
-    }, []);
+    }, [router, user]);
 
     // Don't render if user doesn't exist or role mismatch
-    if (!user || (requiredRoles?.includes(user.role))) {
+    if (!user || (!requiredRoles?.includes(user.role))) {
       return null;
     }
 

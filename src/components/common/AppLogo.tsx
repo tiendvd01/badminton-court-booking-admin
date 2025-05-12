@@ -4,9 +4,10 @@ import React from 'react'
 type LogoProps = {
   size: "sm" | "md" | "lg";
   color?: "white" | "black";
+  withoutText?: boolean;
 }
 
-function AppLogo({ size, color = 'white' }: LogoProps) {
+function AppLogo({ size, color = 'white', withoutText = false }: LogoProps) {
   const sizeMap = {
     sm: { width: 24, height: 24, fontSize: '1rem' },
     md: { width: 48, height: 48, fontSize: '2rem' },
@@ -23,7 +24,7 @@ function AppLogo({ size, color = 'white' }: LogoProps) {
             src="/images/logo/shuttlecock_new_bg.png"
             alt="Logo"
         />
-        <div style={{ fontSize, color }}>{'ShuttleTime'}</div>
+        {!withoutText && <div style={{ fontSize, color }}>{'ShuttleTime'}</div>}
     </div>
   )
 }

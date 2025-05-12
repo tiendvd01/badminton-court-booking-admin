@@ -1,18 +1,40 @@
-'use client'
+"use client";
 import AppLogo from "@/components/common/AppLogo";
 import GridShape from "@/components/common/GridShape";
 import ThemeTogglerTwo from "@/components/common/ThemeTogglerTwo";
 
 import { ThemeProvider } from "@/context/ThemeContext";
+import { useAuthStore } from "@/stores/authStore";
 import Link from "next/link";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  
+  const { isAuthenticated } = useAuthStore();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Only proceed if we know the authentication state
+    if (isAuthenticated !== null) {
+      if (isAuthenticated) {
+        router.replace("/");
+      } else {
+        setIsLoading(false);
+      }
+    } else {
+      setIsLoading(false);
+    }
+  }, [isAuthenticated, router]);
+
+  // Show nothing during the loading/redirect process
+  if (isLoading || isAuthenticated) {
+    return null;
+  }
   return (
     <div className="relative p-6 bg-white z-1 dark:bg-gray-900 sm:p-0">
       <ThemeProvider>

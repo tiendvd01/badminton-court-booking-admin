@@ -29,6 +29,10 @@ class AuthRepository {
       avatar_url,
     });
   }
+
+  async getProfile() {
+    return httpService.get(`${process.env.NEXT_PUBLIC_API_URL}/users/profile`);
+  }
 }
 const authRepository = new AuthRepository();
 export default authRepository;

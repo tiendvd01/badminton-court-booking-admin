@@ -14,7 +14,7 @@ export interface IUser {
 type AuthState = {
     user: IUser | null;
     token: string | null;
-    isAuthenticated: boolean;
+    isAuthenticated: boolean | null;
     login: (user: IUser, token: string) => void;
     logout: () => void;
     initUserFromLocalStorage: () => void;
@@ -55,7 +55,7 @@ export const useAuthStore = create<AuthState>((set) => {
     return {
         user: null,
         token: null,
-        isAuthenticated: false,
+        isAuthenticated: null,
         login,
         logout,
         initUserFromLocalStorage    
