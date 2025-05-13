@@ -1,12 +1,13 @@
-'use client';
-import { JetBrains_Mono } from 'next/font/google';
-import './globals.css';
-import { SidebarProvider } from '@/context/SidebarContext';
-import { ThemeProvider } from '@/context/ThemeContext';
-import { useAuthStore } from '@/stores/authStore';
-import { useEffect } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import useProfileQuery from '@/hooks/api/auth/useProfileQuery';
+"use client";
+import { JetBrains_Mono } from "next/font/google";
+import "./globals.css";
+import { SidebarProvider } from "@/context/SidebarContext";
+import { ThemeProvider } from "@/context/ThemeContext";
+import { useAuthStore } from "@/stores/authStore";
+import { useEffect } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import useProfileQuery from "@/hooks/api/auth/useProfileQuery";
+import FrameGlobal from "@/layout/FrameGlobal";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -23,7 +24,9 @@ const queryClient = new QueryClient({
 
 function AppInitializer() {
   const { initUserFromLocalStorage, login, isAuthenticated } = useAuthStore();
-  const { data: profileData } = useProfileQuery();
+  const { data: profileData } = useProfileQuery({
+    enabled: isAuthenticated ?? false,
+  });
 
   useEffect(() => {
     initUserFromLocalStorage();
@@ -33,7 +36,7 @@ function AppInitializer() {
     if (isAuthenticated && profileData?.data?.user) {
       // Update the user data with the latest from the server
       // We keep the same token
-      const token = localStorage.getItem('token') || '';
+      const token = localStorage.getItem("token") || "";
       login(profileData.data.user, token);
     }
   }, [profileData, isAuthenticated, login]);
@@ -54,10 +57,12 @@ export default function RootLayout({
       <body className={`${jetbrainsMono.className} dark:bg-gray-900`}>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider>
-            <SidebarProvider>
-              <AppInitializer />
-              {children}
-            </SidebarProvider>
+            <FrameGlobal>
+              <SidebarProvider>
+                <AppInitializer />
+                {children}
+              </SidebarProvider>
+            </FrameGlobal>
           </ThemeProvider>
         </QueryClientProvider>
       </body>

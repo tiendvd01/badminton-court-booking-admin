@@ -9,9 +9,9 @@ type LogoProps = {
 
 function AppLogo({ size, color = 'white', withoutText = false }: LogoProps) {
   const sizeMap = {
-    sm: { width: 24, height: 24, fontSize: '1rem' },
-    md: { width: 48, height: 48, fontSize: '2rem' },
-    lg: { width: 72, height: 72, fontSize: '3rem' },
+    sm: { width: 24, height: 24, fontSize: '0.5rem' },
+    md: { width: 48, height: 48, fontSize: '1.5rem' },
+    lg: { width: 72, height: 72, fontSize: '2rem' },
   };
 
   const { width, height, fontSize } = sizeMap[size];

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 export interface IUser {
-    id: number;
+    id?: number;
     name?: string;
     email: string;
     phone?: string;
@@ -18,6 +18,7 @@ type AuthState = {
     login: (user: IUser, token: string) => void;
     logout: () => void;
     initUserFromLocalStorage: () => void;
+    setUser: (user: IUser) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => {
@@ -51,6 +52,13 @@ export const useAuthStore = create<AuthState>((set) => {
             })
         }
     }
+    
+    const setUser = (user: IUser) => {
+        set({
+            user,
+        })
+        localStorage.setItem('user', JSON.stringify(user));
+    }
 
     return {
         user: null,
@@ -58,6 +66,7 @@ export const useAuthStore = create<AuthState>((set) => {
         isAuthenticated: null,
         login,
         logout,
-        initUserFromLocalStorage    
+        initUserFromLocalStorage,
+        setUser
     }
 })

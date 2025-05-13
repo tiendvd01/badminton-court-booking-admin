@@ -33,6 +33,25 @@ class AuthRepository {
   async getProfile() {
     return httpService.get(`${process.env.NEXT_PUBLIC_API_URL}/users/profile`);
   }
+
+  async updateProfile(data: {
+    name?: string;
+    email?: string;
+    phone?: string;
+  }) {
+    return httpService.patch(`${process.env.NEXT_PUBLIC_API_URL}/users/profile/edit`, data);
+  }
+
+  async uploadAvatar(file: File) {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    
+    return httpService.post(`${process.env.NEXT_PUBLIC_API_URL}/users/upload-avatar`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  }
 }
 const authRepository = new AuthRepository();
 export default authRepository;

@@ -50,10 +50,10 @@ export default function SignInForm() {
         <div>
           <div className="mb-5 sm:mb-8">
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-              Sign In
+              Đăng nhập
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your email and password to sign in!
+              Nhập email và mật khẩu để đăng nhập
             </p>
           </div>
           <div>
@@ -83,7 +83,7 @@ export default function SignInForm() {
                     fill="#EB4335"
                   />
                 </svg>
-                Sign in with Google
+                Đăng nhập với google
               </button>
             </div>
             <div className="relative py-3 sm:py-5">
@@ -92,7 +92,7 @@ export default function SignInForm() {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="p-2 text-gray-400 bg-white dark:bg-gray-900 sm:px-5 sm:py-2">
-                  Or
+                  Hoặc
                 </span>
               </div>
             </div>
@@ -111,12 +111,12 @@ export default function SignInForm() {
                 </div>
                 <div>
                   <Label>
-                    Password <span className="text-error-500">*</span>{" "}
+                    Mật khẩu <span className="text-error-500">*</span>{" "}
                   </Label>
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
+                      placeholder="Nhập mật khẩu"
                       error={!!errors.password}
                       hint={errors.password?.message}
                       {...passwordProps}
@@ -134,17 +134,11 @@ export default function SignInForm() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  {/* <div className="flex items-center gap-3">
-                    <Checkbox checked={isChecked} onChange={setIsChecked} />
-                    <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
-                      Keep me logged in
-                    </span>
-                  </div> */}
                   <Link
                     href="/reset-password"
                     className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
                   >
-                    Forgot password?
+                    Quên mật khẩu?
                   </Link>
                 </div>
                 <div>
@@ -159,18 +153,6 @@ export default function SignInForm() {
                 </div>
               </div>
             </form>
-
-            <div className="mt-5">
-              <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                Don&apos;t have an account? {""}
-                <Link
-                  href="/signup"
-                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                >
-                  Sign Up
-                </Link>
-              </p>
-            </div>
           </div>
         </div>
       </div>

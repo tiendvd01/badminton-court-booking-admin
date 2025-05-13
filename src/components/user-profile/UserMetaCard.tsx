@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
@@ -7,28 +7,113 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Image from "next/image";
 import { useAuthStore } from "@/stores/authStore";
+import { useForm } from "react-hook-form";
+import useUploadAvatarMutation from "@/hooks/api/auth/useUploadAvatarMutation";
+import { toast } from "react-toastify";
+import useUpdateProfileMutation from "@/hooks/api/auth/useUpdateProfileMutation";
+import { useQueryClient } from "@tanstack/react-query";
+import { ProfileQueryKey } from "@/hooks/api/auth/useProfileQuery";
 
+type FormValues = {
+  name: string;
+  email: string;
+  phone: string;
+};
 
 export default function UserMetaCard() {
   const { user } = useAuthStore();
   const { isOpen, openModal, closeModal } = useModal();
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Đang lưu thay đổi...");
+  const uploadImageRef = useRef<HTMLInputElement>(null);
+  const queryClient = useQueryClient();
+  const { mutate: uploadAvatar, isPending: isUploading } = useUploadAvatarMutation();
+  const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfileMutation();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>({
+    defaultValues: {
+      name: user?.name || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
+    },
+  });
+
+  const onSubmit = (data: FormValues) => {
+    updateProfile(data, {
+      onSuccess: () => {
+        queryClient.refetchQueries({ queryKey: ProfileQueryKey });
+        toast.success("Cập nhật thông tin cá nhân thành công!");
+      },
+      onError: () => {
+        toast.error("Cập nhật thông tin cá nhân thất bại");
+      },
+    });
     closeModal();
   };
+
+  const handleClickChangeAvatar = () => {
+    uploadImageRef?.current?.click();
+  };
+
+  const handleUploadAvatar = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      uploadAvatar(file, {
+        onSuccess: () => {
+          toast.success("Cập nhật ảnh đại diện thành công!");
+        },
+        onError: () => {
+          toast.error("Cập nhật ảnh đại diện thất bại");
+        },
+      });
+    }
+  };
+
   return (
     <>
       <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
-            <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800">
+            <input
+              accept="image/*"
+              onChange={handleUploadAvatar}
+              type="file"
+              className="hidden"
+              ref={uploadImageRef}
+            ></input>
+            <div
+              onClick={handleClickChangeAvatar}
+              className="relative w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800 group"
+            >
               <Image
                 width={80}
                 height={80}
                 src={user?.avatar_url || "/images/user/default_user.jpg"}
                 alt="người dùng"
+                className="w-full h-full object-cover"
               />
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-60 transition-opacity duration-300 group-hover:cursor-pointer">
+                {isUploading ? (
+                  <div className="w-8 h-8 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
+                ) : (
+                  <svg
+                    className="w-8 h-8 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                    ></path>
+                  </svg>
+                )}
+              </div>
             </div>
             <div className="order-3 xl:order-2">
               <h4 className="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">
@@ -69,7 +154,7 @@ export default function UserMetaCard() {
               Cập nhật thông tin của bạn để giữ cho hồ sơ luôn cập nhật.
             </p>
           </div>
-          <form className="flex flex-col">
+          <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
             <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
               <div className="mt-7">
                 <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
@@ -77,55 +162,60 @@ export default function UserMetaCard() {
                 </h5>
 
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                  <div className="col-span-2 mb-6">
-                    <Label>Ảnh đại diện</Label>
-                    <div className="mt-2 flex items-center">
-                      <Image
-                        width={80}
-                        height={80}
-                        src={user?.avatar_url || "/images/user/default_user.jpg"}
-                        alt="người dùng"
-                        className="h-20 w-20 rounded-full"
-                      />
-                      <label
-                        htmlFor="avatar-upload"
-                        className="ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                      >
-                        Thay đổi
-                      </label>
-                      <input
-                        id="avatar-upload"
-                        name="avatar-upload"
-                        type="file"
-                        className="sr-only"
-                        accept="image/*"
-                        onChange={(e) => {
-                          // Handle file upload logic here
-                          console.log("File selected:", e.target.files[0]);
-                        }}
-                      />
-                    </div>
-                  </div>
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Tên đầy đủ</Label>
-                    <Input type="text" defaultValue="Musharof" />
+                    <Input
+                      type="text"
+                      error={!!errors.name}
+                      hint={errors.name?.message}
+                      {...register("name", { required: "Tên là bắt buộc" })}
+                    />
                   </div>
+
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Địa chỉ email</Label>
-                    <Input type="text" defaultValue="randomuser@pimjo.com" />
+                    <Input
+                      type="text"
+                      error={!!errors.email}
+                      hint={errors.email?.message}
+                      {...register("email", {
+                        required: "Email là bắt buộc",
+                        pattern: {
+                          value:
+                            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                          message: "Email không hợp lệ",
+                        },
+                      })}
+                    />
                   </div>
+
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Số điện thoại</Label>
-                    <Input type="text" defaultValue="+09 363 398 46" />
+                    <Input
+                      type="text"
+                      error={!!errors.phone}
+                      hint={errors.phone?.message}
+                      {...register("phone", {
+                        pattern: {
+                          value: /^(0|\+84)(\s|\.)?((3[2-9])|(5[689])|(7[06-9])|(8[1-689])|(9[0-46-9]))(\d)(\s|\.)?(\d{3})(\s|\.)?(\d{3})$/,
+                          message: "Số điện thoại không hợp lệ",
+                        },
+                      })}
+                    />
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-              <Button size="sm" variant="outline" onClick={closeModal}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={closeModal}
+                type="button"
+              >
                 Đóng
               </Button>
-              <Button size="sm" onClick={handleSave}>
+              <Button loading={isUpdating} size="sm" type="submit">
                 Lưu thay đổi
               </Button>
             </div>

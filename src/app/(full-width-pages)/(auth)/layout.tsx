@@ -46,7 +46,7 @@ export default function AuthLayout({
               <GridShape />
               <div className="flex flex-col items-center max-w-xs">
                 <Link href="/" className="block mb-4">
-                  <AppLogo size="md" />
+                  <AppLogo size="lg" />
                 </Link>
               </div>
             </div>
