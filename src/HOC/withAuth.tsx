@@ -15,15 +15,17 @@ export function withAuth<P extends PropsWithChildren>(
 
   const ComponentWithAuth: React.FC<P> = (props: P) => {
     const router = useRouter();
-    const { user } = useAuthStore();
-
+    const { user, isAuthenticated } = useAuthStore();
+    
     useEffect(() => {
-      if (!user) {
-        router.replace('/signin'); // Redirect if not authenticated
-      } else if (requiredRoles && !requiredRoles.includes(user.role)) {
-        router.replace('/unauthorized'); // Redirect if role doesn't match
+      if(isAuthenticated != null) {
+        if (!user) {
+          router.replace('/signin'); // Redirect if not authenticated
+        } else if (requiredRoles && !requiredRoles.includes(user.role)) {
+          router.replace('/unauthorized'); // Redirect if role doesn't match
+        }
       }
-    }, [router, user]);
+    }, [router, user, isAuthenticated]);
 
     // Don't render if user doesn't exist or role mismatch
     if (!user || (!requiredRoles?.includes(user.role))) {

@@ -18,6 +18,7 @@ type FormValues = {
   name: string;
   email: string;
   phone: string;
+  address: string;
 };
 
 export default function UserMetaCard() {
@@ -37,6 +38,7 @@ export default function UserMetaCard() {
       name: user?.name || "",
       email: user?.email || "",
       phone: user?.phone || "",
+      address: user?.address || "",
     },
   });
 
@@ -195,12 +197,24 @@ export default function UserMetaCard() {
                       type="text"
                       error={!!errors.phone}
                       hint={errors.phone?.message}
+                      placeholder="Nhập số điện thoại"
                       {...register("phone", {
                         pattern: {
                           value: /^(0|\+84)(\s|\.)?((3[2-9])|(5[689])|(7[06-9])|(8[1-689])|(9[0-46-9]))(\d)(\s|\.)?(\d{3})(\s|\.)?(\d{3})$/,
                           message: "Số điện thoại không hợp lệ",
                         },
                       })}
+                    />
+                  </div>
+
+                  <div className="col-span-2 lg:col-span-1">
+                    <Label>Địa chỉ</Label>
+                    <Input
+                      type="text"
+                      error={!!errors.address}
+                      hint={errors.address?.message}
+                      placeholder="Nhập địa chỉ"
+                      {...register("address")}
                     />
                   </div>
                 </div>

@@ -1,3 +1,4 @@
+import { useAuthStore } from '@/stores/authStore';
 import axios from 'axios';
 
 // Create an Axios instance
@@ -27,23 +28,18 @@ httpService.interceptors.request.use(
 httpService.interceptors.response.use(
   (response) => response,
   (error) => {
-    // // Check if the error is due to an unauthorized request (status code 401)
-    // if (error.response && error.response.status === 401) {
-    //   // Get the logout function from the auth store
-    //   // We need to use this approach since we can't use hooks directly in this file
-    //   const logout = useAuthStore.getState().logout;
+    // Check if the error is due to an unauthorized request (status code 401)
+    if (error.response && error.response.status === 401) {
+      // Get the logout function from the auth store
+      // We need to use this approach since we can't use hooks directly in this file
+      const logout = useAuthStore.getState().logout;
       
-    //   // Log the user out
-    //   logout();
+      // Log the user out
+      logout();
       
-    //   // Redirect to the signin page if we're in a browser environment
-    //   if (typeof window !== 'undefined') {
-    //     window.location.href = '/signin';
-    //   }
-      
-    //   // You can also show a notification to the user
-    //   console.log('Your session has expired. Please sign in again.');
-    // }
+      // You can also show a notification to the user
+      console.log('Your session has expired. Please sign in again.');
+    }
     
     // Return the error for further handling
     return Promise.reject(error);

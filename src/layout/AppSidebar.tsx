@@ -4,9 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
+  AdminIcon,
   ChevronDownIcon,
+  DashboardIcon,
   HorizontaLDots,
-  UserIcon,
+  OwnerIcon,
 } from "../icons/index";
 import AppLogo from "@/components/common/AppLogo";
 import { useTheme } from "@/context/ThemeContext";
@@ -20,10 +22,21 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    icon: <UserIcon />,
-    name: "Quản lí chủ sân",
+    icon: <DashboardIcon width={24} height={24} fill="currentColor" />,
+    name: "Dashboard",
     path: "/",
   },
+  {
+    icon: <AdminIcon width={24} height={24} />,
+    name: "Quản lí admin",
+    path: "/admin-manage",
+  },
+  {
+    icon: <OwnerIcon width={24} height={24} />,
+    name: "Quản lí chủ sân",
+    path: "/owner-manage",
+  }
+ 
   // {
   //   icon: <CalenderIcon />,
   //   name: "Calendar",

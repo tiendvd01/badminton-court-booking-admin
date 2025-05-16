@@ -6,7 +6,6 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { useAuthStore } from "@/stores/authStore";
 import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import useProfileQuery from "@/hooks/api/auth/useProfileQuery";
 import FrameGlobal from "@/layout/FrameGlobal";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -23,23 +22,11 @@ const queryClient = new QueryClient({
 });
 
 function AppInitializer() {
-  const { initUserFromLocalStorage, login, isAuthenticated } = useAuthStore();
-  const { data: profileData } = useProfileQuery({
-    enabled: isAuthenticated ?? false,
-  });
+  const { initUserFromLocalStorage } = useAuthStore();
 
   useEffect(() => {
     initUserFromLocalStorage();
-  }, []);
-
-  useEffect(() => {
-    if (isAuthenticated && profileData?.data?.user) {
-      // Update the user data with the latest from the server
-      // We keep the same token
-      const token = localStorage.getItem("token") || "";
-      login(profileData.data.user, token);
-    }
-  }, [profileData, isAuthenticated, login]);
+  }, [initUserFromLocalStorage]);
 
   return null;
 }

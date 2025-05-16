@@ -20,7 +20,6 @@ function useProfileQuery({ enabled = true }: { enabled?: boolean } = {}) {
       const response = await authRepository.getProfile();
       return response.data;
     },
-    retry: 1,
     staleTime: 5 * 60 * 1000, // 5 minutes,
     enabled,
   });

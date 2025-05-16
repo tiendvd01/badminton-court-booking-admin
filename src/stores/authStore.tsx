@@ -5,6 +5,7 @@ export interface IUser {
     name?: string;
     email: string;
     phone?: string;
+    address?: string;
     role: string;
     avatar_url?: string;
     created_at: Date;
@@ -23,22 +24,22 @@ type AuthState = {
 
 export const useAuthStore = create<AuthState>((set) => {
     const login = (user: IUser, token: string) => {
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('token', token);
         set({
             user,
             token,
             isAuthenticated: true,
         })
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('token', token);
     }
     const logout = () => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
         set({
             user: null,
             token: null,
             isAuthenticated: false,
-        })
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
+        }) 
     }
 
     const initUserFromLocalStorage = () => {
@@ -50,6 +51,11 @@ export const useAuthStore = create<AuthState>((set) => {
                 token,
                 isAuthenticated: true,
             })
+        }
+        else {
+            set({
+                isAuthenticated: false,
+            });
         }
     }
     
