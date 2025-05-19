@@ -142,8 +142,8 @@ export default function SignInForm() {
                   </Link>
                 </div>
                 <div>
-                  <Button type="submit" className="w-full" size="sm" disabled={isPending}>
-                    {isPending ? "Signing in..." : "Sign in"}
+                  <Button loading={isPending} type="submit" className="w-full" size="sm" disabled={isPending}>
+                    Đăng nhập
                   </Button>
                   {isError && (
                     <p className="mt-2 text-sm text-error-500">

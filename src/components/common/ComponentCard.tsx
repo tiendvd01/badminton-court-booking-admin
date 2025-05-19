@@ -14,7 +14,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({ title, children, classNam
         >
             {/* Card Header */}
             {title && (
-                <div className="px-6 py-5 flex justify-between border-t border-gray-100 dark:border-gray-800">
+                <div className="px-6 py-4 flex justify-between border-b- border-gray-100 dark:border-gray-800">
                     <h3 className="text-base font-medium text-gray-800 dark:text-white/90">{title}</h3>
                 </div>
             )}

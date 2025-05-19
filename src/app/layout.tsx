@@ -1,5 +1,5 @@
 "use client";
-import { JetBrains_Mono } from "next/font/google";
+import { Noto_Sans } from "next/font/google";
 import "./globals.css";
 import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";
@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import FrameGlobal from "@/layout/FrameGlobal";
 
-const jetbrainsMono = JetBrains_Mono({
+const fonts = Noto_Sans({
   subsets: ["latin"],
 });
 
@@ -41,7 +41,7 @@ export default function RootLayout({
       <head>
         <title>ShuttleTime</title>
       </head>
-      <body className={`${jetbrainsMono.className} dark:bg-gray-900`}>
+      <body className={`${fonts.className} dark:bg-gray-900`}>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider>
             <FrameGlobal>

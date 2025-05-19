@@ -10,7 +10,7 @@ import ArrowUpIcon from "./arrow-up.svg";
 import ArrowDownIcon from "./arrow-down.svg";
 import FolderIcon from "./folder.svg";
 import VideoIcon from "./videos.svg";
-import AudioIcon from "./audio.svg";
+import AudioIcon from "./audio.svg";  
 import GridIcon from "./grid.svg";
 import FileIcon from "./file.svg";
 import DownloadIcon from "./download.svg";
@@ -57,6 +57,7 @@ import AdminIcon from './manager.svg';
 import CustomerIcon from './customer.svg';
 import CourtIcon from './court.svg';
 import CirclePlusIcon from './circle-plus-svgrepo-com.svg';
+import CoinIcon from './coin.svg';
 
 export {
   DownloadIcon,
@@ -117,5 +118,6 @@ export {
   AdminIcon,
   CustomerIcon,
   CourtIcon,
-  CirclePlusIcon
+  CirclePlusIcon,
+  CoinIcon
 };

@@ -6,6 +6,7 @@ import { useSidebar } from "../context/SidebarContext";
 import {
   AdminIcon,
   ChevronDownIcon,
+  CoinIcon,
   CourtIcon,
   CustomerIcon,
   DashboardIcon,
@@ -47,6 +48,11 @@ const navItems: NavItem[] = [
     icon: <CourtIcon width={24} height={24} fill="currentColor" />,
     name: "Quản lí sân",
     path: "/location-manage",
+  },
+  {
+    icon: <CoinIcon width={24} height={24} fill="currentColor" />,
+    name: "Quản lí bảng giá",
+    path: "/price-manage",
   }
  
   // {
