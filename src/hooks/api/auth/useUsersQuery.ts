@@ -10,13 +10,14 @@ interface UsersResponse extends IResponse {
 
 export const UsersQueryKey = (role: string) => ["users", role];
 
-function useUsersQuery({ role }: { role: "admin" | "owner" | "customer" }) {
+function useUsersQuery({ role, enabled = true }: { role: "admin" | "owner" | "customer", enabled?: boolean }) {
   return useQuery<UsersResponse>({
     queryKey: UsersQueryKey(role),
     queryFn: async () => {
       const response = await userRepository.getUsers(role);
       return response.data;
     },
+    enabled,
   });
 }
 

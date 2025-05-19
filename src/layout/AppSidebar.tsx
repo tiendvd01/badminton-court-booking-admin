@@ -6,6 +6,8 @@ import { useSidebar } from "../context/SidebarContext";
 import {
   AdminIcon,
   ChevronDownIcon,
+  CourtIcon,
+  CustomerIcon,
   DashboardIcon,
   HorizontaLDots,
   OwnerIcon,
@@ -35,6 +37,16 @@ const navItems: NavItem[] = [
     icon: <OwnerIcon width={24} height={24} />,
     name: "Quản lí chủ sân",
     path: "/owner-manage",
+  },
+  {
+    icon: <CustomerIcon width={24} height={24} />,
+    name: "Quản lí khách hàng",
+    path: "/customer-manage",
+  },
+  {
+    icon: <CourtIcon width={24} height={24} fill="currentColor" />,
+    name: "Quản lí sân",
+    path: "/location-manage",
   }
  
   // {

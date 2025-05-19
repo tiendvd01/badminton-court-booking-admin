@@ -1,12 +1,9 @@
 import React from "react";
 
-interface TextareaProps {
+interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   placeholder?: string; // Placeholder text
   rows?: number; // Number of rows
-  value?: string; // Current value
-  onChange?: (value: string) => void; // Change handler
   className?: string; // Additional CSS classes
-  disabled?: boolean; // Disabled state
   error?: boolean; // Error state
   hint?: string; // Hint text to display
 }
@@ -21,11 +18,6 @@ const TextArea: React.FC<TextareaProps> = ({
   error = false, // Error state
   hint = "", // Default hint text
 }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (onChange) {
-      onChange(e.target.value);
-    }
-  };
 
   let textareaClasses = `w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden ${className}`;
 
@@ -43,7 +35,7 @@ const TextArea: React.FC<TextareaProps> = ({
         placeholder={placeholder}
         rows={rows}
         value={value}
-        onChange={handleChange}
+        onChange={onChange}
         disabled={disabled}
         className={textareaClasses}
       />

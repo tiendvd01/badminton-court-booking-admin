@@ -20,6 +20,9 @@ function FrameGlobal({ children }: Props) {
         draggable
         pauseOnHover
         theme={themeContext.theme == 'dark' ? 'dark' : 'light'}
+        style={{
+          zIndex: 999999,
+        }}
       />
     </>
   );

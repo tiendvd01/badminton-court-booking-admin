@@ -54,6 +54,9 @@ import BellIcon from "./bell.svg";
 import OwnerIcon from "./owner.svg";
 import DashboardIcon from './dashboard.svg';
 import AdminIcon from './manager.svg';
+import CustomerIcon from './customer.svg';
+import CourtIcon from './court.svg';
+import CirclePlusIcon from './circle-plus-svgrepo-com.svg';
 
 export {
   DownloadIcon,
@@ -111,5 +114,8 @@ export {
   ChatIcon,
   OwnerIcon,
   DashboardIcon,
-  AdminIcon
+  AdminIcon,
+  CustomerIcon,
+  CourtIcon,
+  CirclePlusIcon
 };

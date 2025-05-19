@@ -1,4 +1,4 @@
-import httpService from "@/lib/httpService";
+import httpService from '@/lib/httpService';
 
 class UserRepository {
   async getUsers(role: string) {
@@ -23,7 +23,7 @@ class UserRepository {
       email,
       phone,
       address,
-      password
+      password,
     });
   }
 
@@ -45,7 +45,29 @@ class UserRepository {
       email,
       phone,
       address,
-      password
+      password,
+    });
+  }
+
+  async createCustomer({
+    name,
+    email,
+    phone,
+    address,
+    password,
+  }: {
+    name: string;
+    email: string;
+    phone?: string;
+    address?: string;
+    password: string;
+  }) {
+    return httpService.post(`${process.env.NEXT_PUBLIC_API_URL}/users/register`, {
+      name,
+      email,
+      phone,
+      address,
+      password,
     });
   }
 
@@ -57,7 +79,7 @@ class UserRepository {
       phone?: string;
       address?: string;
       avatar_url?: string;
-    }
+    },
   ) {
     return httpService.patch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, data);
   }
