@@ -109,7 +109,7 @@ function LocationFormCard() {
         <>
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <ComponentCard>
+                    <ComponentCard title='Thông tin chung'>
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-col sm:flex-row gap-2 w-full">
                                 <div className="w-full sm:w-1/2">
