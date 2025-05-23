@@ -1,44 +1,30 @@
-import React from 'react';
-import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../ui/table';
-import Button from '@/components/ui/button/Button';
-import { PlusIcon } from '@/icons';
-import LocationTableRow from './LocationTableRow';
-import useLocationsQuery from '@/hooks/api/courts/useLocationsQuery';
+'use client';
+import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
+import usePriceTablesQuery from '@/hooks/api/prices/usePriceTablesQuery';
 import { useAuthStore } from '@/stores/authStore';
-import { useRouter } from 'next/navigation';
+import React from 'react';
+import PriceTableRow from './PriceTableRow';
 import EmptyState from '@/components/common/EmptyState';
 
-export default function LocationTable() {
-    const { data: locationsData } = useLocationsQuery();
+function PriceTable() {
     const { user } = useAuthStore();
-    const router = useRouter();
-
-    const isAdmin = user?.role === 'admin';
+    const isOwner = user?.role === 'owner';
+    const { data: priceTablesData } = usePriceTablesQuery(isOwner ? user?.id : undefined);
 
     const headers = [
         { field: 'id', label: 'ID' },
-        { field: 'name', label: 'Tên địa điểm' },
-        { field: 'address', label: 'Địa chỉ' },
+        { field: 'name', label: 'Tên bảng giá' },
+        { field: 'description', label: 'Mô tả bảng giá' },
         { field: 'owner', label: 'Chủ sân' },
-        { field: 'courts', label: 'Số sân' },
         { field: 'action', label: 'Hành động' },
     ];
 
-    const handleClickAddCourt = () => {
-        router.replace('/location-manage/add');
-    };
-
     return (
         <>
-            <div className="flex justify-end">
-                <Button size="sm" onClick={handleClickAddCourt} variant="primary" startIcon={<PlusIcon />}>
-                    Thêm địa điểm sân
-                </Button>
-            </div>
             <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
                 <div className="max-w-full overflow-x-auto">
                     <div className="min-w-[1102px]">
-                        {locationsData?.length ? (
+                        {priceTablesData?.data?.length ? (
                             <Table>
                                 {/* Table Header */}
                                 <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
@@ -57,8 +43,8 @@ export default function LocationTable() {
 
                                 {/* Table Body */}
                                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                                    {locationsData?.map((location) => (
-                                        <LocationTableRow key={location.id} data={location} isAdmin={isAdmin} />
+                                    {priceTablesData?.data.map((priceTable, rowIndex) => (
+                                        <PriceTableRow key={rowIndex} data={priceTable} />
                                     ))}
                                 </TableBody>
                             </Table>
@@ -71,3 +57,5 @@ export default function LocationTable() {
         </>
     );
 }
+
+export default PriceTable;

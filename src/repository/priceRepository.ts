@@ -1,50 +1,44 @@
 import httpService from '@/lib/httpService';
-import { IPrice, IPriceTable } from '@/types/court';
 class PriceRepository {
     // Price Table methods
-    async createPriceTable(data: { description?: string; owner_id: number }): Promise<IPriceTable> {
+    async createPriceTable(data: { description?: string; owner_id: number }) {
         return httpService.post(`${process.env.NEXT_PUBLIC_API_URL}/price-tables`, data);
     }
-    async getPriceTables(ownerId?: number): Promise<IPriceTable[]> {
+    async getPriceTables(ownerId?: number) {
         const url = ownerId
             ? `${process.env.NEXT_PUBLIC_API_URL}/price-tables?ownerId=${ownerId}`
             : `${process.env.NEXT_PUBLIC_API_URL}/price-tables`;
         return httpService.get(url);
     }
-    async getPriceTable(id: number): Promise<IPriceTable> {
+    async getPriceTable(id?: number) {
         return httpService.get(`${process.env.NEXT_PUBLIC_API_URL}/price-tables/${id}`);
     }
-    async updatePriceTable(id: number, data: { description?: string; owner_id?: number }): Promise<IPriceTable> {
+    async updatePriceTable(id: number, data: { description?: string; owner_id?: number }) {
         return httpService.patch(`${process.env.NEXT_PUBLIC_API_URL}/price-tables/${id}`, data);
     }
-    async deletePriceTable(id: number): Promise<{ message: string }> {
+    async deletePriceTable(id: number) {
         return httpService.delete(`${process.env.NEXT_PUBLIC_API_URL}/price-tables/${id}`);
     }
     // Price methods
-    async createPrice(data: {
-        start_time: string;
-        end_time: string;
-        price: number;
-        price_table_id: number;
-    }): Promise<IPrice> {
+    async createPrice(data: { start_time: string; end_time: string; price: number; price_table_id: number }) {
         return httpService.post(`${process.env.NEXT_PUBLIC_API_URL}/price-tables/prices`, data);
     }
-    async getPrices(priceTableId?: number): Promise<IPrice[]> {
+    async getPrices(priceTableId?: number) {
         const url = priceTableId
             ? `${process.env.NEXT_PUBLIC_API_URL}/price-tables/prices?priceTableId=${priceTableId}`
             : `${process.env.NEXT_PUBLIC_API_URL}/price-tables/prices`;
         return httpService.get(url);
     }
-    async getPrice(id: number): Promise<IPrice> {
+    async getPrice(id: number) {
         return httpService.get(`${process.env.NEXT_PUBLIC_API_URL}/price-tables/prices/${id}`);
     }
     async updatePrice(
         id: number,
         data: { start_time?: string; end_time?: string; price?: number; price_table_id?: number },
-    ): Promise<IPrice> {
+    ) {
         return httpService.patch(`${process.env.NEXT_PUBLIC_API_URL}/price-tables/prices/${id}`, data);
     }
-    async deletePrice(id: number): Promise<{ message: string }> {
+    async deletePrice(id: number) {
         return httpService.delete(`${process.env.NEXT_PUBLIC_API_URL}/price-tables/prices/${id}`);
     }
 }

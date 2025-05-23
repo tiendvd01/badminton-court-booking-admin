@@ -14,17 +14,22 @@ export interface ICourt {
 
 export interface IPriceTable {
   id: number;
+  name: string;
   description?: string;
   owner_id: number;
-  prices?: IPrice[];
-  courts?: ICourt[];
+  owner?: {
+    id: number;
+    name: string;
+    email: string;
+    avatar_url: string;
+  };
+  prices: IPrice[];
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface IPrice {
-  id: number;
   start_time: string;
   end_time: string;
   price: number;
-  price_table_id: number;
-  priceTable?: IPriceTable;
 }

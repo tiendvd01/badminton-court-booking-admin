@@ -10,13 +10,13 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 
 const TextArea: React.FC<TextareaProps> = ({
   placeholder = "Enter your message", // Default placeholder
-  rows = 3, // Default number of rows
-  value = "", // Default value
+  rows = 3, // Default number of rows// Default value
   onChange, // Callback for changes
   className = "", // Additional custom styles
   disabled = false, // Disabled state
   error = false, // Error state
   hint = "", // Default hint text
+  ...rest
 }) => {
 
   let textareaClasses = `w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden ${className}`;
@@ -34,10 +34,10 @@ const TextArea: React.FC<TextareaProps> = ({
       <textarea
         placeholder={placeholder}
         rows={rows}
-        value={value}
         onChange={onChange}
         disabled={disabled}
         className={textareaClasses}
+        {...rest}
       />
       {hint && (
         <p

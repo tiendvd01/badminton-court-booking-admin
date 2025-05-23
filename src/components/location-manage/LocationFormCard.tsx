@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import ComponentCard from '../common/ComponentCard';
 import Input from '../form/input/InputField';
 import Label from '../form/Label';
@@ -26,11 +26,11 @@ type FormValues = {
         image_url: string;
         price_table_id?: number | null;
     }[];
+    images: string[];
 };
 
 function LocationFormCard() {
     const uploadImageRef = useRef<HTMLInputElement>(null);
-    const [uploadFrames, setUploadFrames] = useState<string[]>([]);
     const { user } = useAuthStore();
 
     const methods = useForm<FormValues>({
@@ -45,8 +45,13 @@ function LocationFormCard() {
                 image_url: '',
                 price_table_id: null,
             }],
+            images: []
         },
     });
+
+    const { setValue, getValues } = methods;
+
+    const uploadFrames = getValues('images');
 
     const {
         register,
@@ -64,11 +69,12 @@ function LocationFormCard() {
     const createLocationMutation = useCreateLocationMutation();
 
     const onSubmit = (data: FormValues) => {
+        console.log("🚀 ~ onSubmit ~ data:", data)
+        return;
         createLocationMutation.mutate(data, {
             onSuccess: () => {
                 toast.success('Location created successfully');
-                reset(); // Reset form fields
-                setUploadFrames(['']); // Reset upload frames
+                reset(); // Reset form fields// Reset upload frames
             },
             onError: (error) => {
                 toast.error('Failed to create location');
@@ -89,7 +95,7 @@ function LocationFormCard() {
         if (file) {
             uploadImageMutation.mutate(file, {
                 onSuccess: (data) => {
-                    setUploadFrames([...uploadFrames, data.data.url]);
+                    setValue('images', [...uploadFrames, data.data.url]);
                 },
                 onError: (error) => {
                     toast.error('Failed to upload image');
@@ -139,6 +145,7 @@ function LocationFormCard() {
                                         onChange={(value) => {
                                             register('owner_id').onChange({ target: { value } });
                                         }}
+                                        defaultValue={user?.id?.toString()}
                                         placeholder="Chọn chủ sân"
                                     />
                                 </div>
@@ -164,7 +171,7 @@ function LocationFormCard() {
                                                     <button
                                                         className="bg-gray-500 text-white rounded-full w-6 h-6 hover:bg-gray-800 flex justify-center items-center"
                                                         onClick={() => {
-                                                            setUploadFrames(uploadFrames.filter((_, i) => i !== index));
+                                                            setValue('images', (uploadFrames.filter((_, i) => i !== index)));
                                                         }}
                                                     >
                                                         <TrashBinIcon fill="white" />
@@ -215,6 +222,16 @@ function LocationFormCard() {
                             Thêm sân
                         </Button>
                     </ComponentCard>
+                    <div className="mt-6 flex justify-end">
+                        <Button
+                            type="submit"
+                            variant="primary"
+                            disabled={createLocationMutation.isPending}
+                            loading={createLocationMutation.isPending}
+                        >
+                            Lưu địa điểm
+                        </Button>
+                    </div>
                 </form>
             </FormProvider>
         </>

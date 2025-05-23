@@ -10,6 +10,7 @@ interface SelectUserProps {
   onChange: (userId: string) => void;
   className?: string;
   defaultValue?: string;
+  value?: string;
 }
 
 function SelectUser({
