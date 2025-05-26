@@ -1,37 +1,42 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import ComponentCard from '../common/ComponentCard';
 import Input from '../form/input/InputField';
 import Label from '../form/Label';
 import useCreateLocationMutation from '@/hooks/api/courts/useCreateLocationMutation';
+import useUpdateLocationMutation from '@/hooks/api/courts/useUpdateLocationMutation';
 import { toast } from 'react-toastify';
 import TextArea from '../form/input/TextArea';
-import { CirclePlusIcon, PlusIcon, TrashBinIcon } from '@/icons';
+import { CirclePlusIcon, TrashBinIcon } from '@/icons';
 import Image from 'next/image';
 import styles from './index.module.css';
-import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import useUploadImageMutation from '@/hooks/api/upload/useUploadImageMutation';
 import { useAuthStore } from '@/stores/authStore';
 import SelectUser from '../form/SelectUser';
-import CourtFormCard from './CourtFormCard';
 import Button from '../ui/button/Button';
+import useLocationQuery from '@/hooks/api/courts/useLocationQuery';
+import useAddLocationImagesMutation from '@/hooks/api/courts/useAddLocationImageMutation';
+import useLocationImagesQuery from '@/hooks/api/courts/useLocationImagesQuery';
 
 type FormValues = {
     name: string;
     address: string;
     description: string;
     owner_id: string;
-    courts: {
-        name: string;
-        description: string;
-        image_url: string;
-        price_table_id?: number | null;
-    }[];
     images: string[];
 };
 
-function LocationFormCard() {
+type Props = {
+    onSaveSuccess?: (locationId: string) => void;
+    locationId?: number;
+};
+
+function LocationFormCard({ onSaveSuccess, locationId }: Props) {
     const uploadImageRef = useRef<HTMLInputElement>(null);
     const { user } = useAuthStore();
+    const locationQuery = useLocationQuery(locationId);
+    const locationImagesQuery = useLocationImagesQuery(locationId);
+    const isEditMode = !!locationId;
 
     const methods = useForm<FormValues>({
         defaultValues: {
@@ -39,13 +44,7 @@ function LocationFormCard() {
             address: '',
             description: '',
             owner_id: '',
-            courts: [{
-                name: '',
-                description: '',
-                image_url: '',
-                price_table_id: null,
-            }],
-            images: []
+            images: [],
         },
     });
 
@@ -60,27 +59,56 @@ function LocationFormCard() {
         formState: { errors },
     } = methods;
 
-    const { fields, append, remove } = useFieldArray({
-        control: methods.control,
-        name: 'courts',
-    });
-
     const uploadImageMutation = useUploadImageMutation();
     const createLocationMutation = useCreateLocationMutation();
+    const updateLocationMutation = useUpdateLocationMutation();
+    const addLocationImagesMutation = useAddLocationImagesMutation();
 
-    const onSubmit = (data: FormValues) => {
-        console.log("🚀 ~ onSubmit ~ data:", data)
-        return;
-        createLocationMutation.mutate(data, {
-            onSuccess: () => {
+    const onSubmit = async (data: FormValues) => {
+        try {
+            if (isEditMode) {
+                // Update existing location
+                await updateLocationMutation.mutateAsync({
+                    id: locationId,
+                    data: {
+                        name: data.name,
+                        address: data.address,
+                        description: data.description,
+                    },
+                });
+
+                // Add new images if any
+                const existingImageUrls = locationImagesQuery.data?.map((img) => img.image_url) || [];
+                const newImageUrls = data.images.filter((url) => !existingImageUrls.includes(url));
+
+                if (newImageUrls.length > 0) {
+                    await addLocationImagesMutation.mutateAsync({
+                        locationId: locationId,
+                        imageUrls: newImageUrls,
+                    });
+                }
+
+                onSaveSuccess?.(locationId.toString());
+                toast.success('Location updated successfully');
+            } else {
+                // Create new location
+                const createdLocation = await createLocationMutation.mutateAsync(data);
+
+                if (data.images.length > 0) {
+                    await addLocationImagesMutation.mutateAsync({
+                        locationId: createdLocation.data.id,
+                        imageUrls: data.images,
+                    });
+                }
+
+                onSaveSuccess?.(createdLocation.data.id.toString());
+                reset();
                 toast.success('Location created successfully');
-                reset(); // Reset form fields// Reset upload frames
-            },
-            onError: (error) => {
-                toast.error('Failed to create location');
-                console.error('Error creating location:', error);
-            },
-        });
+            }
+        } catch (error) {
+            toast.error(isEditMode ? 'Failed to update location' : 'Failed to create location');
+            console.error(isEditMode ? 'Error updating location:' : 'Error creating location:', error);
+        }
     };
 
     const handleClickUploadLocationImage = () => {
@@ -105,11 +133,31 @@ function LocationFormCard() {
         }
     };
 
+    useEffect(() => {
+        if (locationQuery.data) {
+            const location = locationQuery.data;
+            reset({
+                name: location.name,
+                address: location.address,
+                description: location.description || '',
+                owner_id: location.owner_id?.toString() ?? '',
+                images: [],
+            });
+        }
+    }, [locationQuery.data, reset]);
+
+    useEffect(() => {
+        if (isEditMode && locationImagesQuery.data) {
+            const imageUrls = locationImagesQuery.data.map((img) => img.image_url);
+            setValue('images', imageUrls);
+        }
+    }, [locationImagesQuery.data, setValue, isEditMode]);
+
     return (
         <>
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <ComponentCard title='Thông tin chung'>
+                    <ComponentCard title="Thông tin chung" defaultCollapsed={false}>
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-col sm:flex-row gap-2 w-full">
                                 <div className="w-full sm:w-1/2">
@@ -142,11 +190,16 @@ function LocationFormCard() {
                                     <Label htmlFor="owner_id">Chủ sân</Label>
                                     <SelectUser
                                         role="owner"
+                                        {...register('owner_id', {
+                                            required: 'Chủ sân không được để trống',
+                                        })}
                                         onChange={(value) => {
-                                            register('owner_id').onChange({ target: { value } });
+                                            setValue('owner_id', value, { shouldValidate: true });
                                         }}
-                                        defaultValue={user?.id?.toString()}
+                                        defaultValue={getValues('owner_id') || user?.id?.toString()}
                                         placeholder="Chọn chủ sân"
+                                        error={!!errors.owner_id}
+                                        hint={errors.owner_id?.message}
                                     />
                                 </div>
                             )}
@@ -171,7 +224,10 @@ function LocationFormCard() {
                                                     <button
                                                         className="bg-gray-500 text-white rounded-full w-6 h-6 hover:bg-gray-800 flex justify-center items-center"
                                                         onClick={() => {
-                                                            setValue('images', (uploadFrames.filter((_, i) => i !== index)));
+                                                            setValue(
+                                                                'images',
+                                                                uploadFrames.filter((_, i) => i !== index),
+                                                            );
                                                         }}
                                                     >
                                                         <TrashBinIcon fill="white" />
@@ -207,29 +263,14 @@ function LocationFormCard() {
                             </div>
                         </div>
                     </ComponentCard>
-                    <ComponentCard className="mt-4">
-                        {
-                            fields.map((field, index) => {
-                                return (
-                                    <CourtFormCard {...field} index={index} key={field.id} remove={remove} />
-                                );
-                            })
-                        }
-                        <Button
-                            startIcon={<PlusIcon />}
-                            onClick={() => append({ name: '', description: '', image_url: '', price_table_id: 0 })}
-                        >
-                            Thêm sân
-                        </Button>
-                    </ComponentCard>
                     <div className="mt-6 flex justify-end">
                         <Button
                             type="submit"
                             variant="primary"
-                            disabled={createLocationMutation.isPending}
-                            loading={createLocationMutation.isPending}
+                            disabled={createLocationMutation.isPending || updateLocationMutation.isPending}
+                            loading={createLocationMutation.isPending || updateLocationMutation.isPending}
                         >
-                            Lưu địa điểm
+                            {isEditMode ? 'Cập nhật địa điểm' : 'Lưu địa điểm'}
                         </Button>
                     </div>
                 </form>

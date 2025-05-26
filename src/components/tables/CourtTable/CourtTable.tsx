@@ -1,44 +1,49 @@
+'use client';
+import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table';
+import useCourtsQuery from '@/hooks/api/courts/useCourtsQuery';
 import React from 'react';
-import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../ui/table';
+import CourtTableRow from './CourtTableRow';
+import EmptyState from '@/components/common/EmptyState';
 import Button from '@/components/ui/button/Button';
 import { PlusIcon } from '@/icons';
-import LocationTableRow from './LocationTableRow';
-import useLocationsQuery from '@/hooks/api/courts/useLocationsQuery';
-import { useAuthStore } from '@/stores/authStore';
-import { useRouter } from 'next/navigation';
-import EmptyState from '@/components/common/EmptyState';
+import CreateCourtModal from '@/components/modals/CourtModal';
+import { useModal } from '@/hooks/useModal';
 
-export default function LocationTable() {
-    const { data: locationsData } = useLocationsQuery();
-    const { user } = useAuthStore();
-    const router = useRouter();
+interface CourtTableProps {
+    locationId: number;
+}
 
-    const isAdmin = user?.role === 'admin';
+function CourtTable({ locationId }: CourtTableProps) {
+    const { isOpen: isOpenCreate, openModal: openCreateModal, closeModal: closeCreateModal } = useModal();
+    const { data: courtsData } = useCourtsQuery(locationId);
 
     const headers = [
         { field: 'id', label: 'ID' },
-        { field: 'name', label: 'Tên cụm sân' },
-        { field: 'address', label: 'Địa chỉ' },
-        { field: 'owner', label: 'Chủ sân' },
-        { field: 'courts', label: 'Số sân' },
+        { field: 'name', label: 'Tên sân' },
+        { field: 'description', label: 'Mô tả' },
+        { field: 'price_table', label: 'Bảng giá' },
+        { field: 'is_active', label: 'Trạng thái' },
         { field: 'action', label: 'Hành động' },
     ];
 
-    const handleClickAddCourt = () => {
-        router.replace('/location-manage/add');
-    };
+    const handleAddCourt = () => {
+        openCreateModal();
+    }
 
     return (
         <>
-            <div className="flex justify-end">
-                <Button size="sm" onClick={handleClickAddCourt} variant="primary" startIcon={<PlusIcon />}>
-                    Thêm cụm sân
-                </Button>
+            <CreateCourtModal isOpen={isOpenCreate} onClose={closeCreateModal} locationId={locationId} />
+            <div>
+                <div className="flex justify-end">
+                    <Button size="sm" variant="primary" startIcon={<PlusIcon />} onClick={handleAddCourt}>
+                        Thêm sân
+                    </Button>
+                </div>
             </div>
             <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
                 <div className="max-w-full overflow-x-auto">
                     <div className="min-w-[1102px]">
-                        {locationsData?.length ? (
+                        {courtsData?.length ? (
                             <Table>
                                 {/* Table Header */}
                                 <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
@@ -57,8 +62,8 @@ export default function LocationTable() {
 
                                 {/* Table Body */}
                                 <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                                    {locationsData?.map((location) => (
-                                        <LocationTableRow key={location.id} data={location} isAdmin={isAdmin} />
+                                    {courtsData?.map((court) => (
+                                        <CourtTableRow key={court.id} data={court} locationId={locationId} />
                                     ))}
                                 </TableBody>
                             </Table>
@@ -71,3 +76,5 @@ export default function LocationTable() {
         </>
     );
 }
+
+export default CourtTable;

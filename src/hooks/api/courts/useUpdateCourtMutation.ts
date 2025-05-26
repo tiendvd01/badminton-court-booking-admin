@@ -9,8 +9,8 @@ interface UpdateCourtData {
     name?: string;
     location_id?: number;
     description?: string;
-    image_url?: string;
     is_active?: boolean;
+    price_table_id?: number;
   };
 }
 
@@ -24,9 +24,7 @@ export default function useUpdateCourtMutation() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: CourtQueryKey(variables.id) });
-      if (variables.data.location_id) {
-        queryClient.invalidateQueries({ queryKey: CourtsQueryKey(variables.data.location_id) });
-      }
+      queryClient.invalidateQueries({ queryKey: CourtsQueryKey() });
     },
   });
 }

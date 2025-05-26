@@ -6,8 +6,8 @@ interface CreateCourtData {
   name: string;
   location_id: number;
   description?: string;
-  image_url?: string;
   is_active?: boolean;
+  price_table_id?: number;
 }
 
 export default function useCreateCourtMutation() {
@@ -18,8 +18,8 @@ export default function useCreateCourtMutation() {
       const response = await courtRepository.createCourt(data);
       return response.data;
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: CourtsQueryKey(variables.location_id) });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: CourtsQueryKey() });
     },
   });
 }

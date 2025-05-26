@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface SwitchProps {
   label: string;
@@ -45,6 +45,10 @@ const Switch: React.FC<SwitchProps> = ({
             ? "translate-x-full bg-white"
             : "translate-x-0 bg-white",
         };
+
+  useEffect(() => {
+    setIsChecked(defaultChecked);
+  }, [defaultChecked])
 
   return (
     <label

@@ -14,10 +14,8 @@ export default function useDeleteCourtMutation() {
       const response = await courtRepository.deleteCourt(id);
       return response.data;
     },
-    onSuccess: (_, __, context) => {
-      if (context?.locationId) {
-        queryClient.invalidateQueries({ queryKey: CourtsQueryKey(context.locationId) });
-      }
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: CourtsQueryKey() });
     },
   });
 }

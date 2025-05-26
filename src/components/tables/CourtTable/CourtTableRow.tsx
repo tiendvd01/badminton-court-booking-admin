@@ -2,49 +2,47 @@ import React from 'react';
 import { TableCell, TableRow } from '@/components/ui/table';
 import Button from '@/components/ui/button/Button';
 import { useModal } from '@/hooks/useModal';
-import { Modal } from '@/components/ui/modal';
-import { toast } from 'react-toastify';
 import { useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import useDeleteLocationMutation from '@/hooks/api/courts/useDeleteLocationMutation';
-import { ILocation } from '@/types/location';
-import Image from 'next/image';
+import { toast } from 'react-toastify';
+import useDeleteCourtMutation from '@/hooks/api/courts/useDeleteCourtMutation';
+import { ICourt } from '@/types/court';
+import { Modal } from '@/components/ui/modal';
+import CourtModal from '@/components/modals/CourtModal';
 
-type Props = {
-    data: ILocation;
-    isAdmin: boolean;
-};
+interface CourtTableRowProps {
+    data: ICourt;
+    locationId: number;
+}
 
-function LocationTableRow({ data }: Props) {
-    const router = useRouter();
+function CourtTableRow({ data, locationId }: CourtTableRowProps) {
     const queryClient = useQueryClient();
+    const { isOpen: isOpenEdit, openModal: openModalEdit, closeModal: closeModalEdit } = useModal();
     const { isOpen: isOpenDel, openModal: openModalDel, closeModal: closeModalDel } = useModal();
 
-    const deleteLocationMutation = useDeleteLocationMutation();
+    const deleteCourtMutation = useDeleteCourtMutation();
 
     const handleClickDelete = () => {
         openModalDel();
     };
 
     const handleConfirmDelete = () => {
-        deleteLocationMutation.mutate(data.id, {
-            onSuccess: () => {
-                queryClient.invalidateQueries({ queryKey: ['locations'] });
-                toast.success('Xóa địa điểm thành công');
-                closeModalDel();
+        deleteCourtMutation.mutate(
+            data.id,
+            {
+                onSuccess: () => {
+                    queryClient.invalidateQueries({ queryKey: ['courts', locationId] });
+                    toast.success('Xóa sân thành công');
+                    closeModalDel();
+                },
+                onError: (error) => {
+                    toast.error('Xóa sân thất bại: ' + error.message);
+                },
             },
-            onError: (error) => {
-                toast.error('Xóa địa điểm thất bại: ' + error.message);
-            },
-        });
+        );
     };
 
-    const handleViewCourts = () => {
-        router.push(`/location-manage/${data.id}`);
-    };
-
-    const handleClickManageCourt = () => {
-        router.push(`/location-manage/${data.id}/court-manage`);
+    const handleEditCourt = () => {
+        openModalEdit();
     };
 
     return (
@@ -54,46 +52,30 @@ function LocationTableRow({ data }: Props) {
                     {data.id}
                 </TableCell>
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    <div className="flex items-center gap-3">
-                        <div>
-                            <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                                {data.name}
-                            </span>
-                        </div>
-                    </div>
+                    {data.name}
                 </TableCell>
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {data.address}
+                    {data.description || '-'}
                 </TableCell>
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    <div className="flex items-center gap-2">
-                        <Image
-                            width={32}
-                            height={32}
-                            src={data.owner?.avatar_url || '/images/user/default_user.jpg'}
-                            alt={data.owner?.name ?? 'Unknown User'}
-                            className="h-8 w-8 rounded-full object-cover"
-                        />
-                        <span>{data.owner?.name || 'Unknown User'}</span>
-                    </div>
+                    {data.priceTable?.name || '-'}
                 </TableCell>
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {data.courts?.length || 0}
+                    <span
+                        className={`px-2 py-1 rounded-full text-xs ${
+                            data.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }`}
+                    >
+                        {data.is_active ? 'Hoạt động' : 'Không hoạt động'}
+                    </span>
                 </TableCell>
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     <div className="flex gap-2">
-                        <Button size="sm" variant="primary" onClick={handleViewCourts}>
+                        <Button size="sm" variant="primary" onClick={handleEditCourt}>
                             Sửa
                         </Button>
                         <Button size="sm" className="bg-red-500 text-white" onClick={handleClickDelete}>
                             Xóa
-                        </Button>
-                        <Button
-                            size="sm"
-                            className="bg-gray-400 text-white hover:bg-gray-700"
-                            onClick={handleClickManageCourt}
-                        >
-                            Quản lý sân
                         </Button>
                     </div>
                 </TableCell>
@@ -102,7 +84,7 @@ function LocationTableRow({ data }: Props) {
                 <div className="p-5 text-center">
                     <h4 className="mb-5 text-xl font-medium text-gray-800 dark:text-white/90">Xác nhận xóa</h4>
                     <p className="mb-6 text-gray-600 dark:text-gray-400">
-                        Bạn có chắc chắn muốn xóa địa điểm này không?
+                        Bạn có chắc chắn muốn sân này không?
                     </p>
                     <div className="flex justify-center gap-4">
                         <Button variant="outline" onClick={closeModalDel} className="min-w-[120px]">
@@ -114,8 +96,9 @@ function LocationTableRow({ data }: Props) {
                     </div>
                 </div>
             </Modal>
+            <CourtModal isOpen={isOpenEdit} onClose={closeModalEdit} locationId={locationId} courtId={data.id} />
         </>
     );
 }
 
-export default LocationTableRow;
+export default CourtTableRow;

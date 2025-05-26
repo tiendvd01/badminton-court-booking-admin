@@ -183,6 +183,8 @@ function PriceTableForm({ onSaveSuccess, priceTableId }: Props) {
                                 }}
                                 placeholder="Chọn chủ sân"
                                 defaultValue={priceTableQuery.data?.data?.owner_id?.toString()}
+                                error={!!errors.owner_id}
+                                hint={errors.owner_id?.message}
                             />
                         </div>
                     )}

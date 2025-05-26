@@ -46,7 +46,7 @@ const navItems: NavItem[] = [
   },
   {
     icon: <CourtIcon width={24} height={24} fill="currentColor" />,
-    name: "Quản lí sân",
+    name: "Quản lí cụm sân",
     path: "/location-manage",
   },
   {

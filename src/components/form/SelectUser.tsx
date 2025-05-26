@@ -11,6 +11,8 @@ interface SelectUserProps {
   className?: string;
   defaultValue?: string;
   value?: string;
+  error?: boolean;
+  hint?: string;
 }
 
 function SelectUser({
@@ -19,6 +21,8 @@ function SelectUser({
   onChange,
   className = '',
   defaultValue = '',
+  error = false,
+  hint = '',
 }: SelectUserProps) {
   const { data, isLoading } = useUsersQuery({ role, enabled: true });
   const [isOpen, setIsOpen] = useState(false);
@@ -57,7 +61,9 @@ function SelectUser({
       {/* Selected user display / dropdown trigger */}
       <div
         onClick={() => !isLoading && setIsOpen(!isOpen)}
-        className={`flex items-center justify-between h-11 w-full rounded-lg border border-gray-700 px-4 py-2 cursor-pointer bg-gray-900 ${
+        className={`flex items-center justify-between h-11 w-full rounded-lg border ${
+          error ? 'border-red-500' : 'border-gray-700'
+        } px-4 py-2 cursor-pointer bg-gray-900 ${
           isLoading ? 'bg-gray-50 cursor-not-allowed' : ''
         }`}
       >
@@ -81,6 +87,11 @@ function SelectUser({
         )}
         <ChevronDownIcon className="fill-gray-500 dark:fill-gray-400" />
       </div>
+
+      {/* Error message */}
+      {error && hint && (
+        <p className="mt-1 text-sm text-red-500">{hint}</p>
+      )}
 
       {/* Dropdown menu */}
       {isOpen && data?.data && (
