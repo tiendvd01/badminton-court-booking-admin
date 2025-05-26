@@ -10,6 +10,7 @@ interface UpdateLocationData {
     address?: string;
     description?: string;
     image_url?: string;
+    owner_id?: string;
   };
 }
 

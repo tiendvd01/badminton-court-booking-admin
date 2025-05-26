@@ -66,6 +66,11 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
 
     const onSubmit = async (data: FormValues) => {
         try {
+            let ownerId: string | undefined = data.owner_id;
+            if (user?.role === 'owner') {
+                ownerId = user?.id?.toString();
+            }
+
             if (isEditMode) {
                 // Update existing location
                 await updateLocationMutation.mutateAsync({
@@ -74,6 +79,7 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
                         name: data.name,
                         address: data.address,
                         description: data.description,
+                        owner_id: ownerId,
                     },
                 });
 
@@ -92,7 +98,10 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
                 toast.success('Location updated successfully');
             } else {
                 // Create new location
-                const createdLocation = await createLocationMutation.mutateAsync(data);
+                const createdLocation = await createLocationMutation.mutateAsync({
+                    ...data,
+                    owner_id: ownerId ?? '',
+                });
 
                 if (data.images.length > 0) {
                     await addLocationImagesMutation.mutateAsync({

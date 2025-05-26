@@ -23,7 +23,7 @@ class CourtRepository {
     address?: string;
     description?: string;
     image_url?: string;
-    owner_id?: number;
+    owner_id?: string;
   }) {
     return httpService.patch(`${process.env.NEXT_PUBLIC_API_URL}/locations/${id}`, data);
   }

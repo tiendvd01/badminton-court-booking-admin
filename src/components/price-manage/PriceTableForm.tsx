@@ -120,13 +120,18 @@ function PriceTableForm({ onSaveSuccess, priceTableId }: Props) {
                 return;
             }
 
+            let ownerId: number | undefined = data.owner_id;
+            if (user?.role === 'owner') {
+                ownerId = user.id;
+            }
+
             if (priceTableId) {
                 await updatePriceTableMutation.mutateAsync({
                     id: +priceTableId,
                     data: {
                         name: data.name,
                         description: data.description,
-                        owner_id: data.owner_id,
+                        owner_id: ownerId,
                         prices: data.prices,
                     },
                 });
@@ -135,7 +140,7 @@ function PriceTableForm({ onSaveSuccess, priceTableId }: Props) {
                 const createdPriceTable = await createPriceTableMutation.mutateAsync({
                     name: data.name,
                     description: data.description,
-                    owner_id: data.owner_id,
+                    owner_id: ownerId ?? NaN,
                     prices: data.prices
                 });
                 onSaveSuccess?.(createdPriceTable.data.id.toString());

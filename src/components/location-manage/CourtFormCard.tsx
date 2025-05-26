@@ -149,7 +149,7 @@ function CourtFormCard({ onSaveSuccess, locationId, courtId }: Props) {
                         <Label htmlFor="is_active">Trạng thái</Label>
                         <div className="flex items-center gap-2 mt-2">
                             <Switch 
-                                label='Đang hoạt động' 
+                                label={isActive ? 'Hoạt động' : 'Không hoạt động'} 
                                 defaultChecked={isActive} 
                                 onChange={(checked) => setValue('is_active', checked)} 
                             />

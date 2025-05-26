@@ -66,7 +66,7 @@ function CourtTableRow({ data, locationId }: CourtTableRowProps) {
                             data.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                         }`}
                     >
-                        {data.is_active ? 'Hoạt động' : 'Không hoạt động'}
+                        {data.is_active ? 'Hoạt động' : 'Vô hiệu hóa'}
                     </span>
                 </TableCell>
                 <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">

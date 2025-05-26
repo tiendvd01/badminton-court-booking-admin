@@ -59,6 +59,7 @@ import CourtIcon from './court.svg';
 import CirclePlusIcon from './circle-plus-svgrepo-com.svg';
 import CoinIcon from './coin.svg';
 import BackBtnIcon from './backbutton.svg';
+import PaymentCardIcon from './payment-card.svg';
 
 export {
   DownloadIcon,
@@ -121,5 +122,6 @@ export {
   CourtIcon,
   CirclePlusIcon,
   CoinIcon,
-  BackBtnIcon
+  BackBtnIcon,
+  PaymentCardIcon
 };

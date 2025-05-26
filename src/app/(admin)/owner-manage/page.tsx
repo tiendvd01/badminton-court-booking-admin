@@ -1,5 +1,6 @@
 "use client";
 import OwnerTable from "@/components/tables/OwnerTable/OwnerTable";
+import { withAuth } from "@/HOC/withAuth";
 import React from "react";
 
 function OwnerManagePage() {
@@ -11,4 +12,6 @@ function OwnerManagePage() {
   );
 }
 
-export default OwnerManagePage;
+export default withAuth(OwnerManagePage, {
+  requiredRoles: ["admin"],
+});

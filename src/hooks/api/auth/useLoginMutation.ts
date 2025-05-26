@@ -1,5 +1,5 @@
 'use client'
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import authRepository from "@/repository/authRepository";
 import { IUser, useAuthStore } from "@/stores/authStore";
 import { IErrorResponse, IResponse } from "@/types/common";
@@ -14,6 +14,7 @@ interface LoginResponse extends IResponse {
 
 function useLoginMutation() {
   const { login } = useAuthStore();
+  const queryClient = useQueryClient();
 
   return useMutation<LoginResponse, AxiosError<IErrorResponse>, { email: string; password: string }, unknown>({
     mutationFn: async ({ email, password }: { email: string; password: string }) => {
@@ -22,6 +23,7 @@ function useLoginMutation() {
     },
     onSuccess: (data) => {
       login(data.data.user, data.data.token);
+      queryClient.invalidateQueries();
     }
   });
 }

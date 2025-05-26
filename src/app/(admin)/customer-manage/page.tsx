@@ -1,5 +1,6 @@
 "use client";
 import CustomerTable from "@/components/tables/CustomerTable/CustomerTable";
+import { withAuth } from "@/HOC/withAuth";
 import React from "react";
 
 function CustomerManagePage() {
@@ -11,4 +12,6 @@ function CustomerManagePage() {
   );
 }
 
-export default CustomerManagePage;
+export default withAuth(CustomerManagePage, {
+  requiredRoles: ["admin"],
+});
