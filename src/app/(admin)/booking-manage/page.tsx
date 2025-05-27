@@ -1,3 +1,4 @@
+'use client'
 import { withAuth } from '@/HOC/withAuth';
 import React from 'react';
 

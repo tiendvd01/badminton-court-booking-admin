@@ -60,6 +60,7 @@ import CirclePlusIcon from './circle-plus-svgrepo-com.svg';
 import CoinIcon from './coin.svg';
 import BackBtnIcon from './backbutton.svg';
 import PaymentCardIcon from './payment-card.svg';
+import BookingIcon from './booking-icon.svg';
 
 export {
   DownloadIcon,
@@ -123,5 +124,6 @@ export {
   CirclePlusIcon,
   CoinIcon,
   BackBtnIcon,
-  PaymentCardIcon
+  PaymentCardIcon,
+  BookingIcon
 };
