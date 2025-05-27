@@ -1,15 +1,13 @@
-'use client'
-import { withAuth } from '@/HOC/withAuth';
-import React from 'react';
+'use client';
 
-function BookingManagePage() {
+import React from 'react';
+import BookingTable from '@/components/tables/BookingTable/BookingTable';
+
+export default function BookingManagePage() {
     return (
-        <div className="space-y-6">
-            <div className="text-xl font-semibold text-gray-800 dark:text-white/90">Quản lí đặt sân</div>
-        </div>
+        <>
+            <div className="text-xl font-semibold text-gray-800 dark:text-white/90">Quản lý đặt sân</div>
+            <BookingTable />
+        </>
     );
 }
-
-export default withAuth(BookingManagePage, {
-    requiredRoles: ['admin', 'owner'],
-});
