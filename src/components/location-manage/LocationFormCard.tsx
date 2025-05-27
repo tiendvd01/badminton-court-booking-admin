@@ -24,6 +24,7 @@ type FormValues = {
     description: string;
     owner_id: string;
     images: string[];
+    min_shift_time: number;
 };
 
 type Props = {
@@ -45,6 +46,7 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
             description: '',
             owner_id: '',
             images: [],
+            min_shift_time: 60,
         },
     });
 
@@ -80,6 +82,7 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
                         address: data.address,
                         description: data.description,
                         owner_id: ownerId,
+                        min_shift_time: +data.min_shift_time,
                     },
                 });
 
@@ -101,6 +104,7 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
                 const createdLocation = await createLocationMutation.mutateAsync({
                     ...data,
                     owner_id: ownerId ?? '',
+                    min_shift_time: +data.min_shift_time,
                 });
 
                 if (data.images.length > 0) {
@@ -151,6 +155,7 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
                 description: location.description || '',
                 owner_id: location.owner_id?.toString() ?? '',
                 images: [],
+                min_shift_time: location.min_shift_time || 60,
             });
         }
     }, [locationQuery.data, reset]);
@@ -212,6 +217,24 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
                                     />
                                 </div>
                             )}
+                            <div>
+                                <Label htmlFor="min_shift_time">Thời gian đặt sân tối thiểu (phút)</Label>
+                                <Input
+                                    id="min_shift_time"
+                                    type="number"
+                                    error={!!errors.min_shift_time}
+                                    hint={errors.min_shift_time?.message}
+                                    placeholder="Nhập thời gian đặt sân tối thiểu"
+                                    {...register('min_shift_time', {
+                                        required: 'Thời gian đặt sân tối thiểu không được để trống',
+                                        validate: (value) => {
+                                            return (
+                                                value % 30 === 0 || 'Thời gian đặt sân tối thiểu phải là bội số của 30'
+                                            );
+                                        },
+                                    })}
+                                />
+                            </div>
                             <div>
                                 <Label htmlFor="description">Mô tả</Label>
                                 <TextArea

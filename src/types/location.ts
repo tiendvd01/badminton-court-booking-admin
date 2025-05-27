@@ -9,6 +9,7 @@ export interface ILocation {
   description?: string;
   image_url?: string;
   owner_id: number;
+  min_shift_time: number;
   created_at: string;
   updated_at: string;
   owner?: IUser;

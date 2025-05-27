@@ -6,6 +6,7 @@ class CourtRepository {
     address: string;
     description?: string;
     owner_id: number;
+    min_shift_time: number;
   }) {
     return httpService.post(`${process.env.NEXT_PUBLIC_API_URL}/locations`, data);
   }

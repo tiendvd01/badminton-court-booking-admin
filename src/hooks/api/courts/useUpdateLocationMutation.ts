@@ -11,6 +11,7 @@ interface UpdateLocationData {
     description?: string;
     image_url?: string;
     owner_id?: string;
+    min_shift_time?: number;
   };
 }
 
