@@ -5,6 +5,7 @@ class CourtRepository {
     name: string;
     address: string;
     description?: string;
+    logo?: string;
     owner_id: number;
     min_shift_time: number;
   }) {

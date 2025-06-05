@@ -7,11 +7,12 @@ export interface ILocation {
   name: string;
   address: string;
   description?: string;
-  image_url?: string;
+  logo?: string;
   owner_id: number;
   min_shift_time: number;
   created_at: string;
   updated_at: string;
+  images?: ILocationImage[];
   owner?: IUser;
   courts?: ICourt[];
 }

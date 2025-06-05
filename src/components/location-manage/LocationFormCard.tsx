@@ -24,6 +24,7 @@ type FormValues = {
     description: string;
     owner_id: string;
     images: string[];
+    logo?: string;
     min_shift_time: number;
 };
 
@@ -34,6 +35,7 @@ type Props = {
 
 function LocationFormCard({ onSaveSuccess, locationId }: Props) {
     const uploadImageRef = useRef<HTMLInputElement>(null);
+    const uploadLogoRef = useRef<HTMLInputElement>(null);
     const { user } = useAuthStore();
     const locationQuery = useLocationQuery(locationId);
     const locationImagesQuery = useLocationImagesQuery(locationId);
@@ -46,6 +48,7 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
             description: '',
             owner_id: '',
             images: [],
+            logo: '',
             min_shift_time: 60,
         },
     });
@@ -62,6 +65,7 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
     } = methods;
 
     const uploadImageMutation = useUploadImageMutation();
+    const uploadLogoMutation = useUploadImageMutation();
     const createLocationMutation = useCreateLocationMutation();
     const updateLocationMutation = useUpdateLocationMutation();
     const addLocationImagesMutation = useAddLocationImagesMutation();
@@ -83,6 +87,7 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
                         description: data.description,
                         owner_id: ownerId,
                         min_shift_time: +data.min_shift_time,
+                        logo: data.logo,
                     },
                 });
 
@@ -105,6 +110,7 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
                     ...data,
                     owner_id: ownerId ?? '',
                     min_shift_time: +data.min_shift_time,
+                    logo: data.logo,
                 });
 
                 if (data.images.length > 0) {
@@ -154,7 +160,8 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
                 address: location.address,
                 description: location.description || '',
                 owner_id: location.owner_id?.toString() ?? '',
-                images: [],
+                logo: location.logo,
+                images: location.images?.map((img) => img.image_url) || [],
                 min_shift_time: location.min_shift_time || 60,
             });
         }
@@ -166,6 +173,28 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
             setValue('images', imageUrls);
         }
     }, [locationImagesQuery.data, setValue, isEditMode]);
+
+    const handleClickUploadLogo = () => {
+        if (uploadLogoMutation.isPending) {
+            return;
+        }
+        uploadLogoRef?.current?.click();
+    };
+
+    const handleUploadLogo = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            uploadLogoMutation.mutate(file, {
+                onSuccess: (data) => {
+                    setValue('logo', data.data.url);
+                },
+                onError: (error) => {
+                    toast.error('Failed to upload logo');
+                    console.error('Error uploading logo:', error);
+                },
+            });
+        }
+    };
 
     return (
         <>
@@ -217,6 +246,50 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
                                     />
                                 </div>
                             )}
+                            <div>
+                                <Label htmlFor="logo">Logo sân</Label>
+                                <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
+                                    <input
+                                        accept="image/*"
+                                        onChange={handleUploadLogo}
+                                        type="file"
+                                        className="hidden"
+                                        ref={uploadLogoRef}
+                                    ></input>
+                                    <div
+                                        onClick={handleClickUploadLogo}
+                                        className="relative w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800 group"
+                                    >
+                                        <Image
+                                            width={80}
+                                            height={80}
+                                            src={getValues('logo') || '/images/logo/shuttlecock_new_bg.png'}
+                                            alt="logo sân"
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-60 transition-opacity duration-300 group-hover:cursor-pointer">
+                                            {uploadLogoMutation.isPending ? (
+                                                <div className="w-8 h-8 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
+                                            ) : (
+                                                <svg
+                                                    className="w-8 h-8 text-white"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth="2"
+                                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                                                    ></path>
+                                                </svg>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div>
                                 <Label htmlFor="min_shift_time">Thời gian đặt sân tối thiểu (phút)</Label>
                                 <Input

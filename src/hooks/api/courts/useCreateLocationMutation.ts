@@ -7,6 +7,7 @@ interface CreateLocationData {
   address: string;
   description?: string;
   owner_id: string;
+  logo?: string;
   min_shift_time: number;
 }
 
