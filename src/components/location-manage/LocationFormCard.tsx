@@ -17,6 +17,7 @@ import Button from '../ui/button/Button';
 import useLocationQuery from '@/hooks/api/courts/useLocationQuery';
 import useAddLocationImagesMutation from '@/hooks/api/courts/useAddLocationImageMutation';
 import useLocationImagesQuery from '@/hooks/api/courts/useLocationImagesQuery';
+import { usePlacesWidget } from 'react-google-autocomplete';
 
 type FormValues = {
     name: string;
@@ -69,6 +70,16 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
     const createLocationMutation = useCreateLocationMutation();
     const updateLocationMutation = useUpdateLocationMutation();
     const addLocationImagesMutation = useAddLocationImagesMutation();
+
+    const { ref } = usePlacesWidget({
+        apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY,
+        onPlaceSelected: (place) => { setValue('address', place.formatted_address ?? ''); },
+        options: {
+            componentRestrictions: { country: ['vn'] },
+            fields: ['place_id', 'name', 'types', 'formatted_address', 'geometry.location'],
+            types: ['address'],
+        },
+    });
 
     const onSubmit = async (data: FormValues) => {
         try {
@@ -217,15 +228,28 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
                                 </div>
                                 <div className="w-full sm:w-1/2">
                                     <Label htmlFor="address">Địa chỉ sân</Label>
-                                    <Input
-                                        id="address"
-                                        error={!!errors.address}
-                                        hint={errors.address?.message}
-                                        placeholder="Nhập địa chỉ sân"
+                                    <input
+                                        className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900"
+                                        type="text"
+                                        placeholder='Nhập địa chỉ sân'
                                         {...register('address', {
                                             required: 'Địa chỉ sân không được để trống',
                                         })}
+                                        onChange={() => {
+                                            setValue('address', getValues('address'), { shouldValidate: true });
+                                        }}
+                                        value={getValues('address')}
+                                        ref={ref}
                                     />
+                                    {/* <Input
+                                            id="address"
+                                            error={!!errors.address}
+                                            hint={errors.address?.message}
+                                            placeholder="Nhập địa chỉ sân"
+                                        {...register('address', {
+                                            required: 'Địa chỉ sân không được để trống',
+                                        })}
+                                    /> */}
                                 </div>
                             </div>
                             {user?.role === 'admin' && (
