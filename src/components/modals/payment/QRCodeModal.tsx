@@ -17,7 +17,7 @@ const QRCodeModal = ({ isOpen, onClose, payment }: QRCodeModalProps) => {
             <div className="flex flex-col items-center py-4">
                 <div className="w-64 h-64 relative mb-4">
                     <Image
-                        src={payment.qr_image}
+                        src={`https://img.vietqr.io/image/${payment.bank_info.bin}-${payment.payment_number}-qr_only.png`}
                         alt={`QR code for ${payment.account_name}`}
                         fill
                         className="object-contain"

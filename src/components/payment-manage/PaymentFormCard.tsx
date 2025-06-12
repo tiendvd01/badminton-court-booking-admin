@@ -19,7 +19,6 @@ interface FormValues {
     payment_number: string;
     bank_code: string;
     bank_info: object;
-    qr_image: string;
     owner_id?: string;
     is_active: boolean;
 }
@@ -33,11 +32,8 @@ type Props = {
 function PaymentFormCard({ ownerId, onSaveSuccess, paymentId }: Props) {
     const { user } = useAuthStore();
     const isAdmin = user?.role === 'admin';
-    const qrUploadRef = useRef<HTMLInputElement>(null);
-
     const isEditMode = !!paymentId;
     const createPaymentMethodMutation = useCreatePaymentMethodMutation();
-    const uploadImageMutation = useUploadImageMutation();
     const updatePaymentMethodMutation = useUpdatePaymentMethodMutation();
     const paymentMethodQuery = usePaymentMethodQuery(paymentId ? +paymentId : undefined);
 
@@ -54,13 +50,11 @@ function PaymentFormCard({ ownerId, onSaveSuccess, paymentId }: Props) {
             payment_number: '',
             bank_code: '',
             bank_info: undefined,
-            qr_image: '',
             owner_id: ownerId,
             is_active: true,
         },
     });
 
-    const qrImage = watch('qr_image');
     const watchOwnerId = watch('owner_id');
     const isActive = watch('is_active');
 
@@ -93,24 +87,7 @@ function PaymentFormCard({ ownerId, onSaveSuccess, paymentId }: Props) {
         }
     };
 
-    const handleImageUpload = (url: string) => {
-        setValue('qr_image', url, { shouldValidate: true });
-    };
 
-    const handleUploadQrCodeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            uploadImageMutation.mutate(file, {
-                onSuccess: (data) => {
-                    handleImageUpload(data.data.url);
-                },
-                onError: (error) => {
-                    toast.error('Failed to upload image');
-                    console.error('Error uploading image:', error);
-                },
-            });
-        }
-    };
 
     useEffect(() => {
         if (paymentMethodQuery.data) {
@@ -120,7 +97,6 @@ function PaymentFormCard({ ownerId, onSaveSuccess, paymentId }: Props) {
                 payment_number: paymentMethod.payment_number,
                 bank_code: paymentMethod.bank_code,
                 bank_info: paymentMethod.bank_info,
-                qr_image: paymentMethod.qr_image,
                 owner_id: paymentMethod.owner_id,
                 is_active: paymentMethod.is_active,
             });
@@ -174,28 +150,6 @@ function PaymentFormCard({ ownerId, onSaveSuccess, paymentId }: Props) {
                     placeholder="VD: 1234567890"
                 />
                 {errors.payment_number && <p className="text-sm text-red-500">{errors.payment_number.message}</p>}
-            </div>
-
-            <div className="space-y-2">
-                <Label>Mã QR</Label>
-                <input type="file" ref={qrUploadRef} className="hidden" onChange={handleUploadQrCodeImage} />
-                <div
-                    className={`w-32 h-32 rounded-md flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors cursor-pointer overflow-hidden`}
-                    onClick={() => qrUploadRef.current?.click()}
-                >
-                    {qrImage ? (
-                        <Image
-                            src={qrImage}
-                            alt="QR Code"
-                            width={128}
-                            height={128}
-                            className="object-cover rounded-md"
-                        />
-                    ) : (
-                        <div className="text-gray-400 text-center">Tải lên ảnh QR Code thanh toán</div>
-                    )}
-                </div>
-                {errors.qr_image && <p className="text-sm text-red-500">{errors.qr_image.message}</p>}
             </div>
 
             <div className="space-y-2">

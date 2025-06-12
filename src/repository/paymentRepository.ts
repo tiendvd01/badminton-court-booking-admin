@@ -8,7 +8,6 @@ class PaymentRepository {
     payment_number: string;
     bank_code: string;
     bank_info: object;
-    qr_image: string;
     owner_id?: string;
   }) {
     return httpService.post(`${process.env.NEXT_PUBLIC_API_URL}/owner-payments`, data);

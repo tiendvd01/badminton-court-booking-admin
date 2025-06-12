@@ -235,21 +235,12 @@ function LocationFormCard({ onSaveSuccess, locationId }: Props) {
                                         {...register('address', {
                                             required: 'Địa chỉ sân không được để trống',
                                         })}
-                                        onChange={() => {
-                                            setValue('address', getValues('address'), { shouldValidate: true });
+                                        onChange={(e) => {
+                                            setValue('address', e.target.value, { shouldValidate: true });
                                         }}
                                         value={getValues('address')}
                                         ref={ref}
                                     />
-                                    {/* <Input
-                                            id="address"
-                                            error={!!errors.address}
-                                            hint={errors.address?.message}
-                                            placeholder="Nhập địa chỉ sân"
-                                        {...register('address', {
-                                            required: 'Địa chỉ sân không được để trống',
-                                        })}
-                                    /> */}
                                 </div>
                             </div>
                             {user?.role === 'admin' && (

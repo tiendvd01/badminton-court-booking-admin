@@ -64,7 +64,7 @@ const PaymentTableRow = ({ payment, showOwner = false }: PaymentTableRowProps) =
                 <TableCell>
                     <div className="cursor-pointer p-3 w-[128px] h-[128px] overflow-hidden" onClick={openQRModal}>
                         <Image
-                            src={payment.qr_image}
+                            src={`https://img.vietqr.io/image/${payment.bank_info.bin}-${payment.payment_number}-qr_only.png`}
                             alt="QR Code"
                             width={128}
                             height={128}

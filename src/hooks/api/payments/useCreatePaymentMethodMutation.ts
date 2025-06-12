@@ -9,7 +9,6 @@ interface CreatePaymentMethodData {
   payment_number: string;
   bank_code: string;
   bank_info: object;
-  qr_image: string;
   owner_id?: string;
 }
 
