@@ -1,10 +1,12 @@
 import { useTheme } from "@/context/ThemeContext";
+import useSocketNotification from "@/hooks/useSocketNotification";
 import React, { PropsWithChildren } from "react";
 import { ToastContainer } from "react-toastify";
 
 type Props = {} & PropsWithChildren;
 function FrameGlobal({ children }: Props) {
   const themeContext = useTheme();
+  useSocketNotification();
 
   return (
     <>

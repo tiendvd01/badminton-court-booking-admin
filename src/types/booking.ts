@@ -1,4 +1,3 @@
-import { ICourt } from "./court";
 
 export enum BookingStatus {
   PENDING = 'pending',
@@ -9,19 +8,21 @@ export enum BookingStatus {
 
 export interface Booking {
   id: number;
-  court_id: number;
   customer_info: {
     name: string;
-    phone: string;
-    email: string;
+    phone_number: string;
   };
-  start_time: string;
-  end_time: string;
-  total_price: number;
+  booking_code: string;
   booking_date: string;
-  status: BookingStatus;
+  slots: {
+    court_id: number;
+    start_time: string;
+    end_time: string;
+  }[];
+  total_price: number;
+  note?: string;
+  status: string;
   payment_image?: string;
   created_at: string;
   updated_at: string;
-  court: ICourt;
 }

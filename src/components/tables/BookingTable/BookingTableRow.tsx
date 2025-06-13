@@ -5,6 +5,8 @@ import { format } from 'date-fns';
 import Badge from '@/components/ui/badge/Badge';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/button/Button';
+import useLocationQuery from '@/hooks/api/courts/useLocationQuery';
+import useCourtQuery from '@/hooks/api/courts/useCourtQuery';
 
 interface BookingTableRowProps {
     data: Booking;
@@ -13,10 +15,13 @@ interface BookingTableRowProps {
 export default function BookingTableRow({ data }: BookingTableRowProps) {
     const router = useRouter();
 
-    const getStatusBadge = (status: BookingStatus) => {
+    const { data: courtData } = useCourtQuery(data.slots[0].court_id);
+    const { data: locationData } = useLocationQuery(courtData?.location_id);
+
+    const getStatusBadge = (status: BookingStatus) => {  
         switch (status) {
             case BookingStatus.PENDING:
-                return <Badge color="warning">Chờ xác nhận</Badge>;
+                return <Badge color="warning">Chờ thanh toán</Badge>;
             case BookingStatus.CONFIRMED:
                 return <Badge color="success">Đã xác nhận</Badge>;
             case BookingStatus.CANCELLED:
@@ -38,15 +43,17 @@ export default function BookingTableRow({ data }: BookingTableRowProps) {
 
     const customerName = data.customer_info?.name || 'Khách';
     const formattedDate = format(new Date(data.created_at || data.created_at), 'dd/MM/yyyy');
-    const timeRange = `${data.start_time.substring(0, 5)} - ${data.end_time.substring(0, 5)}`;
 
     return (
         <TableRow>
             <TableCell className="px-5 py-4 text-theme-sm text-gray-600 dark:text-gray-300">
                 {data.id}
             </TableCell>
+            <TableCell className="px-5 py-4 font-bold text-theme-sm text-yellow-500 dark:text-yellow-300">
+                {data.booking_code.toUpperCase()}
+            </TableCell>
             <TableCell className="px-5 py-4 text-theme-sm text-gray-600 dark:text-gray-300">
-                {data.court?.name || `Sân #${data.court_id}`}
+                {locationData?.name || `Unknown`}
             </TableCell>
             <TableCell className="px-5 py-4 text-theme-sm text-gray-600 dark:text-gray-300">
                 {customerName}
@@ -55,13 +62,10 @@ export default function BookingTableRow({ data }: BookingTableRowProps) {
                 {formattedDate}
             </TableCell>
             <TableCell className="px-5 py-4 text-theme-sm text-gray-600 dark:text-gray-300">
-                {timeRange}
+                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Math.floor(data.total_price))}
             </TableCell>
             <TableCell className="px-5 py-4 text-theme-sm text-gray-600 dark:text-gray-300">
-                {data.total_price}đ
-            </TableCell>
-            <TableCell className="px-5 py-4 text-theme-sm text-gray-600 dark:text-gray-300">
-                {getStatusBadge(data.status)}
+                {getStatusBadge(data.status as BookingStatus)}
             </TableCell>
             <TableCell className="px-5 py-4 text-theme-sm text-gray-600 dark:text-gray-300">
                 <div className="flex space-x-2">

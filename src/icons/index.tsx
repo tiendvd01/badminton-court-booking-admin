@@ -61,6 +61,7 @@ import CoinIcon from './coin.svg';
 import BackBtnIcon from './backbutton.svg';
 import PaymentCardIcon from './payment-card.svg';
 import BookingIcon from './booking-icon.svg';
+import NotificationIcon from './notification.svg';
 
 export {
   DownloadIcon,
@@ -125,5 +126,6 @@ export {
   CoinIcon,
   BackBtnIcon,
   PaymentCardIcon,
-  BookingIcon
+  BookingIcon,
+  NotificationIcon
 };

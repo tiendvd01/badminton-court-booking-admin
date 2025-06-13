@@ -12,6 +12,7 @@ import {
     CustomerIcon,
     DashboardIcon,
     HorizontaLDots,
+    NotificationIcon,
     OwnerIcon,
     PaymentCardIcon,
 } from '../icons/index';
@@ -107,7 +108,7 @@ const AppSidebar: React.FC = () => {
             icon: <BookingIcon width={24} height={24} fill="currentColor" />,
             name: 'Quản lí đặt sân',
             path: '/booking-manage',
-        }
+        },
     ];
 
     const renderMenuItems = (navItems: NavItem[], menuType: 'main' | 'others') => (

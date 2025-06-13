@@ -1,27 +1,21 @@
 
 import React from 'react';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../ui/table';
-import Button from '@/components/ui/button/Button';
-import { PlusIcon } from '@/icons';
 import EmptyState from '@/components/common/EmptyState';
 import { useRouter } from 'next/navigation';
 import BookingTableRow from './BookingTableRow';
 import useBookingsQuery from '@/hooks/api/bookings/useBookingsQuery';
 
-interface BookingTableProps {
-  locationId?: number;
-}
-
-export default function BookingTable({ locationId }: BookingTableProps) {
+export default function BookingTable() {
     const router = useRouter();
-    const { data: bookingsData } = useBookingsQuery({ locationId });
+    const { data: bookingsData } = useBookingsQuery();
 
     const headers = [
         { field: 'id', label: 'ID' },
-        { field: 'court', label: 'Sân' },
+        { field: "booking_code", label: "Mã Booking"},
+        { field: 'location', label: 'Cụm sân' },
         { field: 'customer', label: 'Khách hàng' },
         { field: 'booking_date', label: 'Ngày đặt' },
-        { field: 'time', label: 'Thời gian' },
         { field: 'total_price', label: 'Tổng tiền' },
         { field: 'status', label: 'Trạng thái' },
         { field: 'action', label: 'Hành động' },
