@@ -95,6 +95,9 @@ function LocationTableRow({ data }: Props) {
                         >
                             Quản lý sân
                         </Button>
+                        <Button size="sm" className="bg-gray-400 text-white hover:bg-gray-700" onClick={() => router.push(`/location-manage/${data.id}/slot`)}>
+                            Sơ đồ
+                        </Button>
                     </div>
                 </TableCell>
             </TableRow>

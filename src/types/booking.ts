@@ -19,6 +19,7 @@ export interface Booking {
     start_time: string;
     end_time: string;
   }[];
+  location_id: number;
   total_price: number;
   note?: string;
   status: string;

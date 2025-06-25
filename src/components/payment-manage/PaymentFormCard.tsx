@@ -1,13 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import BankSelect from '../form/BankSelect';
 import Input from '../form/input/InputField';
 import Label from '../form/Label';
 import SelectUser from '../form/SelectUser';
 import Button from '../ui/button/Button';
 import { useAuthStore } from '@/stores/authStore';
-import Image from 'next/image';
 import useCreatePaymentMethodMutation from '@/hooks/api/payments/useCreatePaymentMethodMutation';
-import useUploadImageMutation from '@/hooks/api/upload/useUploadImageMutation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import useUpdatePaymentMethodMutation from '@/hooks/api/payments/useUpdatePaymentMethodMutation';

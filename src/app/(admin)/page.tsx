@@ -9,6 +9,7 @@ import Button from '@/components/ui/button/Button';
 function NotificationsPage() {
   const router = useRouter();
   const { data: notifications, isLoading } = useNotificationsQuery();
+  console.log("🚀 ~ NotificationsPage ~ notifications:", notifications)
   const markAllAsReadMutation = useMarkAllAsReadMutation();
 
   if (isLoading) {
@@ -33,7 +34,7 @@ function NotificationsPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {notifications.map((notification) => (
+          {notifications?.data?.map((notification) => (
             <div key={notification.id} className="bg-white rounded-lg shadow-sm">
               <div className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 py-3 border-b">
                 <div className="text-sm font-medium">
