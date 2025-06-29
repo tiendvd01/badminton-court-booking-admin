@@ -12,7 +12,6 @@ import {
     CustomerIcon,
     DashboardIcon,
     HorizontaLDots,
-    NotificationIcon,
     OwnerIcon,
     PaymentCardIcon,
 } from '../icons/index';

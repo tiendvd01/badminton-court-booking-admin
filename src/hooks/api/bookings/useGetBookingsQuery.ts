@@ -26,12 +26,10 @@ export function useGetBookingsQuery(params?: GetBookingsParams) {
   return useQuery<BookingResponse>({
     queryKey: BookingsQueryKey(params),
     queryFn: async () => {
-      // Convert status array to comma-separated string if it exists
-      const statusQuery = params?.status?.join(',');
       
       // Call the repository with the filters
       const response = await bookingRepository.getAllBookings({
-        status: statusQuery,
+        status: params?.status,
         bookingDate: params?.bookingDate,
         ...(params?.locationId && { locationId: params.locationId.toString() })
       });

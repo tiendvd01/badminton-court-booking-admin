@@ -37,24 +37,17 @@ class BookingRepository {
   async getAllBookings(filters?: {
     customerName?: string;
     bookingDate?: string;
-    status?: string;
+    status?: string[];
+    locationId?: string;
   }) {
-    const params = new URLSearchParams();
-    
-    if (filters?.customerName) {
-      params.append('customerName', filters.customerName);
-    }
-    
-    if (filters?.bookingDate) {
-      params.append('bookingDate', filters.bookingDate);
-    }
-    
-    if (filters?.status) {
-      params.append('status', filters.status);
-    }
-    
-    const queryString = params.toString() ? `?${params.toString()}` : '';
-    return httpService.get(`${process.env.NEXT_PUBLIC_API_URL}/bookings${queryString}`);
+    return httpService.get(`${process.env.NEXT_PUBLIC_API_URL}/bookings`, {
+      params: {
+        customerName: filters?.customerName,
+        bookingDate: filters?.bookingDate,
+        status: filters?.status,
+        locationId: filters?.locationId,
+      }
+    });
   }
 
   // Get a specific booking by ID

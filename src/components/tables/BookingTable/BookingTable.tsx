@@ -2,12 +2,10 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../ui/table';
 import EmptyState from '@/components/common/EmptyState';
-import { useRouter } from 'next/navigation';
 import BookingTableRow from './BookingTableRow';
 import useBookingsQuery from '@/hooks/api/bookings/useBookingsQuery';
 
 export default function BookingTable() {
-    const router = useRouter();
     const { data: bookingsData } = useBookingsQuery();
 
     const headers = [
@@ -20,10 +18,6 @@ export default function BookingTable() {
         { field: 'status', label: 'Trạng thái' },
         { field: 'action', label: 'Hành động' },
     ];
-
-    const handleAddBooking = () => {
-        router.push('/booking-manage/create');
-    }
 
     return (
         <>

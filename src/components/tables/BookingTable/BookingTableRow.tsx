@@ -37,10 +37,6 @@ export default function BookingTableRow({ data }: BookingTableRowProps) {
         router.push(`/booking-manage/${data.id}`);
     };
 
-    const handleEdit = () => {
-        router.push(`/booking-manage/edit/${data.id}`);
-    };
-
     const customerName = data.customer_info?.name || 'Khách';
     const formattedDate = format(new Date(data.created_at || data.created_at), 'dd/MM/yyyy');
 
@@ -71,9 +67,6 @@ export default function BookingTableRow({ data }: BookingTableRowProps) {
                 <div className="flex space-x-2">
                     <Button onClick={handleViewDetails} variant="outline" size="sm" className='bg-gray-300 text-black'>
                         Chi tiết
-                    </Button>
-                    <Button onClick={handleEdit} variant="primary" size="sm">
-                        Sửa
                     </Button>
                 </div>
             </TableCell>

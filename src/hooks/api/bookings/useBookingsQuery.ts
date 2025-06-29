@@ -11,17 +11,21 @@ interface BookingsResponse extends IResponse {
 
 interface BookingsQueryParams {
   locationId?: number;
-  courtId?: number;
-  startDate?: string;
-  endDate?: string;
-  status?: string;
+  bookingDate?: string;
+  status?: string[];
+  customerName?: string;
 }
 
 export default function useBookingsQuery(params?: BookingsQueryParams) {
   return useQuery<BookingsResponse>({
     queryKey: BookingsQueryKey(params),
     queryFn: async () => {
-      const response = await bookingRepository.getAllBookings(params);
+      const response = await bookingRepository.getAllBookings({
+        locationId: params?.locationId?.toString(),
+        bookingDate: params?.bookingDate,
+        status: params?.status,
+        customerName: params?.customerName,
+      });
       return response.data;
     },
   });

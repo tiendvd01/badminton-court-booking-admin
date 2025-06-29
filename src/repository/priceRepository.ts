@@ -16,6 +16,9 @@ class PriceRepository {
     async updatePriceTable(id: number, data: { description?: string; owner_id?: number }) {
         return httpService.patch(`${process.env.NEXT_PUBLIC_API_URL}/price-tables/${id}`, data);
     }
+    async getPriceTableByLocation(locationId: number) {
+        return httpService.get(`${process.env.NEXT_PUBLIC_API_URL}/price-tables/byLocation?locationId=${locationId}`);
+    }
     async deletePriceTable(id: number) {
         return httpService.delete(`${process.env.NEXT_PUBLIC_API_URL}/price-tables/${id}`);
     }

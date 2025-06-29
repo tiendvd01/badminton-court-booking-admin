@@ -24,7 +24,7 @@ function PageSlot() {
                 Sơ đồ đặt sân: {locationQuery.data?.name}
             </div>
             <ComponentCard className="mt-4">
-                <BookingSheet bookingDate={new Date().toISOString().split('T')[0]} />
+                <BookingSheet bookingDate={new Date().toISOString()} />
             </ComponentCard>
         </>
     );
