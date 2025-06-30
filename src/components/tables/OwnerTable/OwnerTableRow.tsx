@@ -103,9 +103,6 @@ function OwnerTableRow({ data }: Props) {
             >
               Xóa
             </Button>
-            <Button size="sm" className="bg-gray-300 text-black">
-              Thông tin
-            </Button>
           </div>
         </TableCell>
       </TableRow>
