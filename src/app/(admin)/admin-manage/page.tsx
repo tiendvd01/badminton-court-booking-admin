@@ -12,6 +12,8 @@ function AdminManagePage() {
     );
 }
 
-export default withAuth(AdminManagePage, {
+const AdminManagePageWithAuth = withAuth(AdminManagePage, {
     requiredRoles: ['admin'],
 });
+
+export default AdminManagePageWithAuth;
